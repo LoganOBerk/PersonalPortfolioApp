@@ -121,8 +121,7 @@ class Cli:
             # TODO: Selection input receiver
 
             if selection == 1:
-                portfolio = serv.create_portfolio(userAccount, name)
-                userAccount.add_portfolio(portfolio)
+                serv.create_portfolio(userAccount, name)
                 # TODO: Msg that indicates a action was successfully performed
             elif selection != 2:
                 # TODO: invalid selection error msg
