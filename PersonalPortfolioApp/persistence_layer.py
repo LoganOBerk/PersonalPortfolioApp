@@ -1,12 +1,24 @@
 import sqlite3 as sqlite
 
+
+# PURPOSE:
 class Database:
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def __init__(self, source):
         self.source = source
         self.conn = sqlite.connect(source)
         self.conn.execute("PRAGMA foreign_keys = ON")
         self.build_database()
-    
+
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def build_database(self):
         cursor = self.conn.cursor()
 
@@ -46,6 +58,11 @@ class Database:
 
         cursor.executescript(create_user_table + create_portfolios_table + create_stocks_table)
 
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def pull_user(self, login):
         u_id = self.resolve_user_id(login)
 
@@ -56,11 +73,16 @@ class Database:
             FROM users
             WHERE id = {u_id}
         '''
-        
+
         cursor.execute(pull_user)
 
         return cursor.fetchone()
 
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def pull_portfolios(self, user_id):
         cursor = self.conn.cursor()
 
@@ -69,11 +91,16 @@ class Database:
             FROM portfolios
             WHERE user_id = {user_id}
         '''
-        
+
         cursor.execute(pull_portfolios)
 
         return cursor.fetchall()
 
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def pull_stocks(self, portfolio_id):
         cursor = self.conn.cursor()
 
@@ -88,7 +115,10 @@ class Database:
         return cursor.fetchall()
 
 
-
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def insert_user(self, credentials):
         cursor = self.conn.cursor()
 
@@ -102,6 +132,11 @@ class Database:
 
         return cursor.lastrowid
 
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def insert_portfolio(self, user_id, portfolioName):
         cursor = self.conn.cursor()
 
@@ -116,6 +151,10 @@ class Database:
         return cursor.lastrowid
 
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def insert_stock(self, portfolio_id, stock_dat):
         cursor = self.conn.cursor()
 
@@ -123,6 +162,7 @@ class Database:
             INSERT INTO stocks (portfolio_id, ticker, quantity)
             VALUES (?, ?, ?)
         '''
+
         ticker, quantity = stock_dat
 
         cursor.execute(insert_stock, (portfolio_id, ticker, quantity))
@@ -131,6 +171,10 @@ class Database:
         return cursor.lastrowid
 
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def delete_stock(self, portfolio_id, ticker):
         cursor = self.conn.cursor()
 
@@ -140,7 +184,12 @@ class Database:
 
         cursor.execute(delete_stock, (portfolio_id, ticker))
         self.conn.commit()
-    
+
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def update_stock(self, stock_id, quantity):
         cursor = self.conn.cursor()
 
@@ -150,10 +199,14 @@ class Database:
             WHERE id = ?
         '''
 
-
         cursor.execute(update_stock, (quantity, stock_id))
         self.conn.commit()
 
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def resolve_user_id(self, login):
         cursor = self.conn.cursor()
 
@@ -173,7 +226,3 @@ class Database:
             return None
         else:
             return user_info[0]
-
-
-    
-            

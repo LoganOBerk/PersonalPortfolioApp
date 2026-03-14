@@ -1,15 +1,31 @@
 from visualizer import Visualizer as vis
 
+
+# PURPOSE:
 class Cli:
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def __init__(self, service, validator):
         self.userAccount = None
         self.serv = service
         self.validator = validator
 
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def execute(self):
         self.display_startup_menu()
 
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def display_startup_menu(self):
         while True:
             selection = 0
@@ -33,13 +49,17 @@ class Cli:
             self.display_user_dashboard(self.userAccount)
 
 
-    def display_account_credential_gatherer(self, isNew):  
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    def display_account_credential_gatherer(self, isNew):
 
         isValid = False
 
         while True:
             # TODO: Login/Signup menu display
-            # TODO: Credential input receiver (login & password) 
+            # TODO: Credential input receiver (login & password)
 
             creds = login, password
 
@@ -71,6 +91,10 @@ class Cli:
             return
 
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def display_user_dashboard(self, userAccount):
 
         while True:
@@ -96,6 +120,10 @@ class Cli:
                 pass  # Remove this once you implement
 
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def display_portfolio_creation_menu(self, userAccount):
 
         isValid = False
@@ -121,7 +149,7 @@ class Cli:
             # TODO: Selection input receiver
 
             if selection == 1:
-                self.serv.create_portfolio(userAccount = userAccount, portfolioName = name)
+                self.serv.create_portfolio(userAccount=userAccount, portfolioName=name)
                 # TODO: Msg that indicates a action was successfully performed
             elif selection != 2:
                 # TODO: invalid selection error msg
@@ -130,6 +158,10 @@ class Cli:
             return
 
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def display_portfolio_contents(self, portfolio):
 
         data = [{"ticker": s.ticker, "quantity": s.quantity} for s in portfolio.stocks.values()]
@@ -157,11 +189,15 @@ class Cli:
                 pass  # Remove this once you implement
 
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def display_stock_transaction_menu(self, portfolio, isPurchase):
 
         while True:
             # TODO: Transaction menu display
-            # TODO: shares_requested input receiver (ticker & quantity) 
+            # TODO: shares_requested input receiver (ticker & quantity)
 
             shares_requested = ticker, quantity
 
@@ -175,7 +211,11 @@ class Cli:
                 # TODO: invalid quantity error msg
                 continue
 
-            isValidBalance = self.validator.sufficient_balance_validator(self.userAccount.balance, shares_requested, isPurchase)
+            isValidBalance = self.validator.sufficient_balance_validator(
+                self.userAccount.balance,
+                shares_requested,
+                isPurchase
+            )
             if isValidBalance != True:
                 # TODO: invalid selection error msg
                 continue
@@ -191,10 +231,18 @@ class Cli:
 
             if selection == 1:
                 if isPurchase:
-                    self.serv.execute_buy(userAccount = self.userAccount, portfolio = portfolio, stock_dat = shares_requested)
+                    self.serv.execute_buy(
+                        userAccount=self.userAccount,
+                        portfolio=portfolio,
+                        stock_dat=shares_requested
+                    )
                     # TODO: Msg that indicates a action was successfully performed
                 else:
-                    self.serv.execute_sell(userAccount = self.userAccount, portfolio = portfolio, stock_dat = shares_requested)
+                    self.serv.execute_sell(
+                        userAccount=self.userAccount,
+                        portfolio=portfolio,
+                        stock_dat=shares_requested
+                    )
                     # TODO: Msg that indicates a action was successfully performed
 
             elif selection != 2:
@@ -202,6 +250,3 @@ class Cli:
                 continue
 
             return
-
-
-    
