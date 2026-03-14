@@ -2,6 +2,7 @@ from stock import Stock
 
 class Portfolio:
     def __init__(self, name, stocks : dict[str, Stock]):
+        self.id = None
         self.name = name
         self.stocks = stocks
 
@@ -15,6 +16,7 @@ class Portfolio:
             self.stocks[t].increment_quantity(q)
         else:
             self.stocks[t] = Stock(ticker = t, quantity = q)
+            return "added"
 
     def remove_stock(self, stock_dat):
         t, q = stock_dat
@@ -23,3 +25,4 @@ class Portfolio:
         
         if(self.stocks[t].quantity == 0):
             del self.stocks[t]
+            return "removed"

@@ -1,5 +1,6 @@
 class Stock:
     def __init__(self, ticker, quantity):
+        self.id = None
         self.ticker = ticker
         self.quantity = quantity
 
