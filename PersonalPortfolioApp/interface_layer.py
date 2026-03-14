@@ -62,7 +62,7 @@ class Cli:
                     self.userAccount = self.serv.create_account(creds)
                     # TODO: Msg that indicates a action was successfully performed
                 else:
-                    self.userAccount = self.serv.find_account(creds)
+                    self.userAccount = self.serv.find_account(login)
 
             elif selection != 2:
                 # TODO: invalid selection error msg
@@ -121,7 +121,7 @@ class Cli:
             # TODO: Selection input receiver
 
             if selection == 1:
-                self.serv.create_portfolio(userAccount, name)
+                self.serv.create_portfolio(userAccount = userAccount, portfolioName = name)
                 # TODO: Msg that indicates a action was successfully performed
             elif selection != 2:
                 # TODO: invalid selection error msg
@@ -132,14 +132,15 @@ class Cli:
 
     def display_portfolio_contents(self, portfolio):
 
+        data = [{"ticker": s.ticker, "quantity": s.quantity} for s in portfolio.stocks.values()]
+        vis.display_pie_chart(data)
+
         while True:
             selection = 0
 
             # TODO: Portfolio contents display
             # TODO: Display selection options
             # TODO: Selection input receiver
-
-            vis.display_pie_chart(portfolio)
 
             if selection == 1:
                 self.display_stock_transaction_menu(portfolio=portfolio, isPurchase=True)
@@ -160,21 +161,21 @@ class Cli:
 
         while True:
             # TODO: Transaction menu display
-            # TODO: Stock input receiver (ticker & quantity) 
+            # TODO: shares_requested input receiver (ticker & quantity) 
 
-            stock = ticker, quantity
+            shares_requested = ticker, quantity
 
             isValidTicker = self.validator.stock_ticker_validator(portfolio, ticker, isPurchase)
             if isValidTicker != True:
                 # TODO: invalid ticker error msg
                 continue
 
-            isValidQuantity = self.validator.stock_quantity_validator(portfolio, stock, isPurchase)
+            isValidQuantity = self.validator.stock_quantity_validator(portfolio, shares_requested, isPurchase)
             if isValidQuantity != True:
                 # TODO: invalid quantity error msg
                 continue
 
-            isValidBalance = self.validator.sufficient_balance_validator(self.userAccount.balance, stock, isPurchase)
+            isValidBalance = self.validator.sufficient_balance_validator(self.userAccount.balance, shares_requested, isPurchase)
             if isValidBalance != True:
                 # TODO: invalid selection error msg
                 continue
@@ -190,10 +191,10 @@ class Cli:
 
             if selection == 1:
                 if isPurchase:
-                    self.serv.execute_buy(self.userAccount, portfolio, stock)
+                    self.serv.execute_buy(userAccount = self.userAccount, portfolio = portfolio, stock_dat = shares_requested)
                     # TODO: Msg that indicates a action was successfully performed
                 else:
-                    self.serv.execute_sell(self.userAccount, portfolio, stock)
+                    self.serv.execute_sell(userAccount = self.userAccount, portfolio = portfolio, stock_dat = shares_requested)
                     # TODO: Msg that indicates a action was successfully performed
 
             elif selection != 2:
