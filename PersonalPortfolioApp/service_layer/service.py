@@ -17,7 +17,7 @@ class Service:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def create_account(self, credentials) -> User:
+    def create_account(self, credentials : tuple[str, int]) -> User:
         # TODO: Add user to the db
         # TODO: Create user and return object
         pass
@@ -27,7 +27,7 @@ class Service:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def find_account(self, login) -> User:
+    def find_account(self, login : str) -> User:
         # TODO: Create, Populate and return user object
         pass
 
@@ -36,8 +36,8 @@ class Service:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def fund_account(self, userAccount, funds):
-        userAccount.add_funds(funds)
+    def fund_account(self, user_account : User, funds_request : float) -> None:
+        user_account.add_funds(funds_request)
         #TODO: update db funds
         pass
 
@@ -46,42 +46,33 @@ class Service:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def create_portfolio(self, userAccount, portfolioName) -> None:
-        # TODO: add new empty portfolio to userAccount object
-        userAccount.portfolios[portfolioName].id = self.db.insert_portfolio(
-            user_id=userAccount.id,
-            portfolioName=portfolioName
-        )
-        pass
+    def create_portfolio(self, user_account : User, portfolio_name : str) -> None:
+        # TODO: add new empty portfolio to user_account object
+        user_account.portfolios[portfolio_name].id = self.db.insert_portfolio(user_account.id, portfolio_name)
 
 
     # INPUT:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def remove_portfolio(self, userAccount, portfolioName) -> None:
-        userAccount.remove_portfolio(portfolioName)
+    def remove_portfolio(self, user_account : User, portfolio_name : str) -> None:
+        user_account.remove_portfolio(portfolio_name)
         #TODO: call remove function for removing portfolio from db
-        pass
 
 
     # INPUT:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def execute_buy(self, userAccount, portfolio, stock_dat) -> None:
+    def execute_buy(self, user_account : User, portfolio : Portfolio, shares_requested : str) -> None:
         # TODO: call api to get stock price
         # TODO: subtract funds from user account
-        # TODO: add the stock(s) to the portfolio
-        r = portfolio.buy_shares(stock_dat)
+        r = portfolio.buy_shares(shares_requested)
         s_id = r[0]
         flag = r[1]
 
         if flag == "new":
-            portfolio.stocks[stock_dat[0]].id = self.db.insert_stock(
-                portfolio_id=portfolio.id,
-                stock_dat=stock_dat
-            )
+            portfolio.stocks[shares_requested[0]].id = self.db.insert_stock(portfolio.id, shares_requested)
         else:
             # TODO: update the db
             pass
@@ -91,11 +82,11 @@ class Service:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def execute_sell(self, userAccount, portfolio, stock_dat) -> None:
+    def execute_sell(self, user_account : User, portfolio : Portfolio, shares_requested : str) -> None:
         # TODO: call api to get stock price
         # TODO: add funds to user account
         # TODO: remove the stock(s) from the portfolio
-        r = portfolio.sell_shares(stock_dat)
+        r = portfolio.sell_shares(shares_requested)
         s_id = r[0]
         flag = r[1]
 
@@ -113,7 +104,7 @@ class Service:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def user_exists_in_storage(self, login) -> bool:
+    def user_exists_in_storage(self, login : str) -> bool:
         u_id = self.db.resolve_user_id(login)
         return u_id != None
 
@@ -122,52 +113,48 @@ class Service:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def populate_user(self, userAccount, login):
+    def populate_user(self, user_account : User, login : str) -> None:
         user_info = self.db.pull_user(login)
 
-        userAccount.id = user_info[0]
-        userAccount.login = user_info[1]
-        userAccount.password = user_info[2]
-        userAccount.balance = user_info[3]
+        user_account.id = user_info[0]
+        user_account.login = user_info[1]
+        user_account.password = user_info[2]
+        user_account.balance = user_info[3]
 
-        self.populate_user_portfolios(
-            user_id=userAccount.id,
-            portfolios=userAccount.portfolios
-        )
+        self.populate_user_portfolios(user_account.id, user_account.portfolios)
 
 
     # INPUT:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def populate_user_portfolios(self, user_id, portfolios):
+    def populate_user_portfolios(self, user_id : int, portfolios : dict[str, Portfolio]) -> None:
         stored_portfolios = self.db.pull_portfolios(user_id)
 
         for portfolio in stored_portfolios:
-            portfolios[portfolio[1]] = Portfolio(
-                id=portfolio[0],
-                name=portfolio[1]
-            )
 
-            self.populate_portfolio_stocks(
-                portfolio_id=portfolio[0],
-                stocks=portfolios[portfolio[1]].stocks
-            )
+            p_id = portfolio[0]
+            p_name = portfolio[1]
+
+            portfolios[p_name] = Portfolio(id=p_id,name=p_name)
+
+            self.populate_portfolio_stocks(p_id, portfolios[p_name].stocks)
 
 
     # INPUT:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def populate_portfolio_stocks(self, portfolio_id, stocks):
+    def populate_portfolio_stocks(self, portfolio_id : int, stocks : dict[str, Stock]) -> None:
         stored_stocks = self.db.pull_stocks(portfolio_id)
 
         for stock in stored_stocks:
-            stocks[stock[1]] = Stock(
-                id=stock[0],
-                ticker=stock[1],
-                quantity=stock[2]
-            )
+
+            s_id = stock[0]
+            s_ticker = stock[1]
+            s_quantity = stock[2]
+
+            stocks[s_ticker] = Stock(id=s_id, ticker=s_ticker, quantity=s_quantity)
 
 
     # INPUT:

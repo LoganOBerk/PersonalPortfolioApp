@@ -11,7 +11,7 @@ class Stock:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def increment_quantity(self, inc_amt):
+    def increment_quantity(self, inc_amt : int) -> None:
         self.quantity += inc_amt
 
 
@@ -19,5 +19,5 @@ class Stock:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def decrement_quantity(self, dec_amt):
+    def decrement_quantity(self, dec_amt : int) -> None:
         self.quantity -= dec_amt

@@ -15,23 +15,23 @@ class User:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def add_portfolio(self, portfolioName):
-        self.portfolios[portfolioName] = Portfolio(name = portfolioName)
+    def add_portfolio(self, portfolio_name : str) -> None:
+        self.portfolios[portfolio_name] = Portfolio(name = portfolio_name)
 
 
     # INPUT:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def remove_portfolio(self, portfolioName):
-        del self.portfolios[portfolioName]
+    def remove_portfolio(self, portfolio_name : str) -> None:
+        del self.portfolios[portfolio_name]
 
     
     # INPUT:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def add_funds(self, funds_to_add):
+    def add_funds(self, funds_to_add : float) -> None:
         self.balance += funds_to_add
 
 
@@ -39,7 +39,7 @@ class User:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def sub_funds(self, funds_to_sub):
+    def sub_funds(self, funds_to_sub : float) -> None:
         self.balance -= funds_to_sub
 
 

@@ -13,7 +13,7 @@ class Portfolio:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def portfolio_has_stock(self, ticker):
+    def portfolio_has_stock(self, ticker : str) -> bool:
         return ticker in self.stocks
 
 
@@ -21,10 +21,10 @@ class Portfolio:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def buy_shares(self, stock_dat):
+    def buy_shares(self, shares_requested : tuple[str, int]) -> tuple[int, str]:
         flag = ""
 
-        t, q = stock_dat
+        t, q = shares_requested
 
         s_id = None
 
@@ -42,10 +42,10 @@ class Portfolio:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def sell_shares(self, stock_dat):
+    def sell_shares(self, shares_requested : tuple[str, int]) -> tuple[int, str]:
         flag = ""
 
-        t, q = stock_dat
+        t, q = shares_requested
 
         s_id = self.stocks[t].id
 

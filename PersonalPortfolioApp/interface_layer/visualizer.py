@@ -12,7 +12,7 @@ class Visualizer:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def display_pie_chart(self, raw_holdings_data):
+    def display_pie_chart(self, raw_holdings_data : list[dict[str, int]]):
         # TODO: use pandas to format the data
         # TODO: use matplotlib to display the data
 

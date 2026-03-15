@@ -63,7 +63,7 @@ class Database:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def pull_user(self, login):
+    def pull_user(self, login : str) -> tuple:
         u_id = self.resolve_user_id(login)
 
         cursor = self.conn.cursor()
@@ -83,7 +83,7 @@ class Database:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def pull_portfolios(self, user_id):
+    def pull_portfolios(self, user_id : int) -> list[tuple]:
         cursor = self.conn.cursor()
 
         pull_portfolios = f'''
@@ -101,7 +101,7 @@ class Database:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def pull_stocks(self, portfolio_id):
+    def pull_stocks(self, portfolio_id : int) -> list[tuple]:
         cursor = self.conn.cursor()
 
         pull_stocks = f'''
@@ -119,7 +119,7 @@ class Database:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def insert_user(self, credentials):
+    def insert_user(self, credentials : tuple[str, str]) -> int:
         cursor = self.conn.cursor()
 
         insert_user = '''
@@ -137,7 +137,7 @@ class Database:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def insert_portfolio(self, user_id, portfolioName):
+    def insert_portfolio(self, user_id : int, portfolio_name : str) -> int:
         cursor = self.conn.cursor()
 
         insert_portfolio = '''
@@ -145,7 +145,7 @@ class Database:
             VALUES (?, ?)
         '''
 
-        cursor.execute(insert_portfolio, (user_id, portfolioName))
+        cursor.execute(insert_portfolio, (user_id, portfolio_name))
         self.conn.commit()
 
         return cursor.lastrowid
@@ -155,7 +155,7 @@ class Database:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def delete_portfolio(self, portfolio_id):
+    def delete_portfolio(self, portfolio_id : int) -> None:
         cursor = self.conn.cursor()
 
         delete_portfolio = '''
@@ -172,7 +172,7 @@ class Database:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def insert_stock(self, portfolio_id, stock_dat):
+    def insert_stock(self, portfolio_id : int, shares_requested : tuple[str, int]) -> int:
         cursor = self.conn.cursor()
 
         insert_stock = '''
@@ -180,7 +180,7 @@ class Database:
             VALUES (?, ?, ?)
         '''
 
-        ticker, quantity = stock_dat
+        ticker, quantity = shares_requested
 
         cursor.execute(insert_stock, (portfolio_id, ticker, quantity))
         self.conn.commit()
@@ -192,7 +192,7 @@ class Database:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def delete_stock(self, stock_id):
+    def delete_stock(self, stock_id : int) -> None:
         cursor = self.conn.cursor()
 
         delete_stock = '''
@@ -208,7 +208,7 @@ class Database:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def update_stock(self, stock_id, quantity):
+    def update_stock(self, stock_id : int, quantity : int) -> None:
         cursor = self.conn.cursor()
 
         update_stock = '''
@@ -225,7 +225,7 @@ class Database:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def update_funds(self, user_id, funds):
+    def update_funds(self, user_id : int, funds_request : float) -> None:
         cursor = self.conn.cursor()
 
         update_stock = '''
@@ -234,7 +234,7 @@ class Database:
             WHERE id = ?
         '''
 
-        cursor.execute(update_stock, (funds, user_id))
+        cursor.execute(update_stock, (funds_request, user_id))
         self.conn.commit()
 
 
@@ -242,7 +242,7 @@ class Database:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def resolve_user_id(self, login):
+    def resolve_user_id(self, login : str) -> int:
         cursor = self.conn.cursor()
 
         resolve_id = '''

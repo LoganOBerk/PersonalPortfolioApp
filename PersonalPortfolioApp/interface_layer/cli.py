@@ -6,7 +6,7 @@ class Cli:
     # PRECONDITION:
     # POSTCONDITION:
     def __init__(self, service, validator, visualizer):
-        self.userAccount = None
+        self.user_account = None
         self.serv = service
         self.validator = validator
         self.vis = visualizer
@@ -27,33 +27,33 @@ class Cli:
     def display_startup_menu(self):
         while True:
             selection = 0
-            self.userAccount = None
+            self.user_account = None
 
             # TODO: Welcome menu display
             # TODO: Display selection options
             # TODO: Selection input receiver
 
             if selection == 1:
-                self.display_account_credential_gatherer(isNew=True)
+                self.display_account_credential_gatherer(new=True)
                 continue
             elif selection == 2:
-                self.display_account_credential_gatherer(isNew=False)
+                self.display_account_credential_gatherer(new=False)
             elif selection == 3:
                 self.serv.exitApp()
             else:
                 # TODO: invalid selection error msg
                 continue
 
-            self.display_user_dashboard(self.userAccount)
+            self.display_user_dashboard(self.user_account)
 
 
     # INPUT:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def display_account_credential_gatherer(self, isNew):
+    def display_account_credential_gatherer(self, new : bool):
 
-        isValid = False
+        valid = False
 
         while True:
             # TODO: Login/Signup menu display
@@ -61,9 +61,9 @@ class Cli:
 
             creds = login, password
 
-            isValid = self.validator.account_validator(creds, isNew)
+            valid = self.validator.account_validator(creds, new)
 
-            if isValid:
+            if valid:
                 break
 
             # TODO: invalid credentials error msg
@@ -76,11 +76,11 @@ class Cli:
             # TODO: Selection input receiver
 
             if selection == 1:
-                if isNew:
-                    self.userAccount = self.serv.create_account(creds)
+                if new:
+                    self.user_account = self.serv.create_account(creds)
                     # TODO: Msg that indicates a action was successfully performed
                 else:
-                    self.userAccount = self.serv.find_account(login)
+                    self.user_account = self.serv.find_account(login)
 
             elif selection != 2:
                 # TODO: invalid selection error msg
@@ -93,28 +93,28 @@ class Cli:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def display_user_dashboard(self, userAccount):
+    def display_user_dashboard(self, user_account):
 
         while True:
             selection = 0
-            numPortfolios = len(userAccount.portfolios)
+            numPortfolios = len(user_account.portfolios)
 
             # TODO: User dashboard display
             # TODO: Display selection options
             # TODO: Selection input receiver
 
-            portfolio_list = list(userAccount.portfolios.values())
+            portfolio_list = list(user_account.portfolios.values())
 
             if 0 < selection <= numPortfolios:
                 r = self.display_portfolio_contents(portfolio_list[selection - 1])
                 if r == "back":
                     return
             elif selection == numPortfolios + 1:
-                self.display_funding_menu(userAccount)
+                self.display_funding_menu(user_account)
             elif selection == numPortfolios + 2:
-                self.display_portfolio_modification_menu(userAccount, create = True)
+                self.display_portfolio_modification_menu(user_account, create = True)
             elif selection == numPortfolios + 3:
-                self.display_portfolio_modification_menu(userAccount, create = False)
+                self.display_portfolio_modification_menu(user_account, create = False)
             elif selection == numPortfolios + 4:
                 return
             elif selection == numPortfolios + 5:
@@ -128,19 +128,19 @@ class Cli:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def display_funding_menu(self, userAccount):
+    def display_funding_menu(self, user_account):
 
-        isValid = False
+        valid = False
 
         while True :
             # TODO: Account Funding display
             # TODO: Funds input reciever
 
-            funds_to_add = funds_to_add
+            funds_request = funds_request
 
-            isValid = self.validator.fund_validator(funds_to_add)
+            valid = self.validator.fund_validator(user_account.balance, funds_request)
 
-            if isValid:
+            if valid:
                 break
 
             # TODO: invalid funds error msg
@@ -152,7 +152,7 @@ class Cli:
             # TODO: Selection input receiver
 
             if selection == 1:
-                self.serv.fund_account(userAccount = userAccount, funds = funds_to_add)
+                self.serv.fund_account(user_account, funds_request)
                 # TODO: Msg that indicates a action was successfully performed
             elif selection != 2:
                 # TODO: invalid selection error msg
@@ -164,19 +164,19 @@ class Cli:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def display_portfolio_modification_menu(self, userAccount, create):
+    def display_portfolio_modification_menu(self, user_account, create : bool):
 
-        isValid = False
+        valid = False
 
         while True:
             # TODO: Portfolio creation display
             # TODO: Portfolio name input receiver
 
-            name = name
+            name_request = name_request
 
-            isValid = self.validator.portfolio_validator(userAccount, name, create)
+            valid = self.validator.portfolio_validator(user_account, name_request, create)
 
-            if isValid:
+            if valid:
                 break
 
             # TODO: invalid name error msg
@@ -190,10 +190,10 @@ class Cli:
 
             if selection == 1:
                 if(create):
-                    self.serv.create_portfolio(userAccount=userAccount, portfolioName=name)
+                    self.serv.create_portfolio(user_account, name_request)
                     # TODO: Msg that indicates a action was successfully performed
                 else:
-                    self.serv.remove_portfolio(userAccount=userAccount, portfolioName=name)
+                    self.serv.remove_portfolio(user_account, name_request)
                     # TODO: Msg that indicates a action was successfully performed
             elif selection != 2:
                 # TODO: invalid selection error msg
@@ -207,9 +207,6 @@ class Cli:
     # PRECONDITION:
     # POSTCONDITION:
     def display_portfolio_contents(self, portfolio):
-
-        
-
         while True:
             selection = 0
 
@@ -221,9 +218,9 @@ class Cli:
             self.vis.display_pie_chart(data)
 
             if selection == 1:
-                self.display_stock_transaction_menu(portfolio=portfolio, isPurchase=True)
+                self.display_stock_transaction_menu(portfolio, purchase=True)
             elif selection == 2:
-                self.display_stock_transaction_menu(portfolio=portfolio, isPurchase=False)
+                self.display_stock_transaction_menu(portfolio, purchase=False)
             elif selection == 3:
                 return
             elif selection == 4:
@@ -239,7 +236,7 @@ class Cli:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def display_stock_transaction_menu(self, portfolio, isPurchase):
+    def display_stock_transaction_menu(self, portfolio, purchase : bool):
 
         while True:
             # TODO: Transaction menu display
@@ -247,22 +244,18 @@ class Cli:
 
             shares_requested = ticker, quantity
 
-            isValidTicker = self.validator.stock_ticker_validator(portfolio, ticker, isPurchase)
-            if isValidTicker != True:
+            valid = self.validator.stock_ticker_validator(portfolio, ticker, purchase)
+            if not valid:
                 # TODO: invalid ticker error msg
                 continue
 
-            isValidQuantity = self.validator.stock_quantity_validator(portfolio, shares_requested, isPurchase)
-            if isValidQuantity != True:
+            valid = self.validator.stock_quantity_validator(portfolio, shares_requested, purchase)
+            if not valid:
                 # TODO: invalid quantity error msg
                 continue
 
-            isValidBalance = self.validator.sufficient_balance_validator(
-                self.userAccount.balance,
-                shares_requested,
-                isPurchase
-            )
-            if isValidBalance != True:
+            valid = self.validator.sufficient_balance_validator(self.user_account.balance, shares_requested, purchase)
+            if not valid:
                 # TODO: invalid selection error msg
                 continue
 
@@ -276,19 +269,11 @@ class Cli:
             # TODO: Selection input receiver
 
             if selection == 1:
-                if isPurchase:
-                    self.serv.execute_buy(
-                        userAccount=self.userAccount,
-                        portfolio=portfolio,
-                        stock_dat=shares_requested
-                    )
+                if purchase:
+                    self.serv.execute_buy(self.user_account, portfolio, shares_requested)
                     # TODO: Msg that indicates a action was successfully performed
                 else:
-                    self.serv.execute_sell(
-                        userAccount=self.userAccount,
-                        portfolio=portfolio,
-                        stock_dat=shares_requested
-                    )
+                    self.serv.execute_sell(self.user_account, portfolio, shares_requested)
                     # TODO: Msg that indicates a action was successfully performed
 
             elif selection != 2:
