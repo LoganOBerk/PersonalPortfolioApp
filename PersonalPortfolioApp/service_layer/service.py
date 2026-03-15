@@ -17,7 +17,7 @@ class Service:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def create_account(self, credentials : tuple[str, int]) -> User:
+    def create_account(self, credentials : tuple[str, str]) -> User:
         # TODO: Add user to the db
         # TODO: Create user and return object
         pass
@@ -64,7 +64,7 @@ class Service:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def execute_buy(self, user_account : User, portfolio : Portfolio, shares_requested : str) -> None:
+    def execute_buy(self, user_account : User, portfolio : Portfolio, shares_requested : tuple[str, int]) -> None:
         # TODO: call api to get stock price
         # TODO: subtract funds from user account
         r = portfolio.buy_shares(shares_requested)
@@ -82,7 +82,7 @@ class Service:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def execute_sell(self, user_account : User, portfolio : Portfolio, shares_requested : str) -> None:
+    def execute_sell(self, user_account : User, portfolio : Portfolio, shares_requested : tuple[str, int]) -> None:
         # TODO: call api to get stock price
         # TODO: add funds to user account
         # TODO: remove the stock(s) from the portfolio
