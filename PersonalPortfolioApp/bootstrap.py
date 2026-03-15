@@ -26,7 +26,7 @@ class App:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def init(self, testing=False):
+    def init(self, testing=False) -> None:
 
         db_dir = 'AppData'
         db_source = 'app_data.db'
@@ -56,7 +56,7 @@ class App:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def run(self):
+    def run(self) -> None:
         self.display.execute()
 
 
