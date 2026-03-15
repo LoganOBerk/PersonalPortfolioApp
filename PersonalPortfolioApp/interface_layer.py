@@ -105,26 +105,68 @@ class Cli:
             # TODO: Display selection options
             # TODO: Selection input receiver
 
+            portfolio_list = list(userAccount.portfolios.values())
+
             if 0 < selection <= numPortfolios:
-                r = self.display_portfolio_contents(userAccount.portfolios[selection - 1])
+                r = self.display_portfolio_contents(portfolio_list[selection - 1])
                 if r == "back":
                     return
             elif selection == numPortfolios + 1:
-                self.display_portfolio_creation_menu(userAccount)
+                self.display_funding_menu(userAccount)
             elif selection == numPortfolios + 2:
-                return
+                self.display_portfolio_modification_menu(userAccount, create = True)
             elif selection == numPortfolios + 3:
+                self.display_portfolio_modification_menu(userAccount, create = False)
+            elif selection == numPortfolios + 4:
+                return
+            elif selection == numPortfolios + 5:
                 self.serv.exitApp()
             else:
                 # TODO: invalid selection error msg
                 pass  # Remove this once you implement
 
+    
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    def display_funding_menu(self, userAccount):
+
+        isValid = False
+
+        while True :
+            # TODO: Account Funding display
+            # TODO: Funds input reciever
+
+            funds_to_add = funds_to_add
+
+            isValid = self.validator.fund_validator(funds_to_add)
+
+            if isValid:
+                break
+
+            # TODO: invalid funds error msg
+
+        while True:
+            selection = 0
+
+            # TODO: Display selection options
+            # TODO: Selection input receiver
+
+            if selection == 1:
+                self.serv.fund_account(userAccount = userAccount, funds = funds_to_add)
+                # TODO: Msg that indicates a action was successfully performed
+            elif selection != 2:
+                # TODO: invalid selection error msg
+                continue
+
+            return
 
     # INPUT:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def display_portfolio_creation_menu(self, userAccount):
+    def display_portfolio_modification_menu(self, userAccount, create):
 
         isValid = False
 
@@ -134,7 +176,7 @@ class Cli:
 
             name = name
 
-            isValid = self.validator.portfolio_validator(userAccount, name)
+            isValid = self.validator.portfolio_validator(userAccount, name, create)
 
             if isValid:
                 break
@@ -149,8 +191,12 @@ class Cli:
             # TODO: Selection input receiver
 
             if selection == 1:
-                self.serv.create_portfolio(userAccount=userAccount, portfolioName=name)
-                # TODO: Msg that indicates a action was successfully performed
+                if(create):
+                    self.serv.create_portfolio(userAccount=userAccount, portfolioName=name)
+                    # TODO: Msg that indicates a action was successfully performed
+                else:
+                    self.serv.remove_portfolio(userAccount=userAccount, portfolioName=name)
+                    # TODO: Msg that indicates a action was successfully performed
             elif selection != 2:
                 # TODO: invalid selection error msg
                 continue

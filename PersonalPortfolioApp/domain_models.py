@@ -1,3 +1,5 @@
+from __future__ import annotations
+
 # PURPOSE:
 class User:
 
@@ -13,11 +15,18 @@ class User:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def add_portfolio(self, portfolio_dat):
-        n, s = portfolio_dat
-        self.portfolios[n] = Portfolio(name=n, stocks=s)
+    def add_portfolio(self, portfolioName):
+        self.portfolios[portfolioName] = Portfolio(name = portfolioName)
 
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    def remove_portfolio(self, portfolioName):
+        del self.portfolios[portfolioName]
+
+    
     # INPUT:
     # OUTPUT:
     # PRECONDITION:

@@ -37,7 +37,7 @@ class Database:
                 user_id INTEGER NOT NULL,
                 name TEXT NOT NULL,
 
-                FOREIGN KEY (user_id) REFERENCES users(id),
+                FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
 
                 UNIQUE(user_id, name)
             );
@@ -50,7 +50,7 @@ class Database:
                 ticker TEXT NOT NULL,
                 quantity INTEGER NOT NULL,
 
-                FOREIGN KEY (portfolio_id) REFERENCES portfolios(id),
+                FOREIGN KEY (portfolio_id) REFERENCES portfolios(id) ON DELETE CASCADE,
 
                 UNIQUE(portfolio_id, ticker)
             );
@@ -68,13 +68,13 @@ class Database:
 
         cursor = self.conn.cursor()
 
-        pull_user = f'''
+        pull_user = '''
             SELECT id, login, password, balance
             FROM users
-            WHERE id = {u_id}
+            WHERE id = ?
         '''
 
-        cursor.execute(pull_user)
+        cursor.execute(pull_user, (u_id,))
 
         return cursor.fetchone()
 
@@ -89,10 +89,10 @@ class Database:
         pull_portfolios = f'''
             SELECT id, name
             FROM portfolios
-            WHERE user_id = {user_id}
+            WHERE user_id = ?
         '''
 
-        cursor.execute(pull_portfolios)
+        cursor.execute(pull_portfolios, (user_id,))
 
         return cursor.fetchall()
 
@@ -107,10 +107,10 @@ class Database:
         pull_stocks = f'''
             SELECT id, ticker, quantity
             FROM stocks
-            WHERE portfolio_id = {portfolio_id}
+            WHERE portfolio_id = ?
         '''
 
-        cursor.execute(pull_stocks)
+        cursor.execute(pull_stocks, (portfolio_id,))
 
         return cursor.fetchall()
 
@@ -155,6 +155,23 @@ class Database:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
+    def delete_portfolio(self, portfolio_id):
+        cursor = self.conn.cursor()
+
+        delete_portfolio = '''
+            DELETE FROM portfolios
+            WHERE id = ?
+        '''
+
+        cursor.execute(delete_portfolio, (portfolio_id,))
+        self.conn.commit()
+
+
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def insert_stock(self, portfolio_id, stock_dat):
         cursor = self.conn.cursor()
 
@@ -175,14 +192,15 @@ class Database:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def delete_stock(self, portfolio_id, ticker):
+    def delete_stock(self, stock_id):
         cursor = self.conn.cursor()
 
         delete_stock = '''
-            DELETE FROM stocks WHERE portfolio_id = ? AND ticker = ?
+            DELETE FROM stocks 
+            WHERE id = ?
         '''
 
-        cursor.execute(delete_stock, (portfolio_id, ticker))
+        cursor.execute(delete_stock, (stock_id,))
         self.conn.commit()
 
 
@@ -200,6 +218,23 @@ class Database:
         '''
 
         cursor.execute(update_stock, (quantity, stock_id))
+        self.conn.commit()
+
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    def update_funds(self, user_id, funds):
+        cursor = self.conn.cursor()
+
+        update_stock = '''
+            UPDATE users
+            SET balance = balance + ?
+            WHERE id = ?
+        '''
+
+        cursor.execute(update_stock, (funds, user_id))
         self.conn.commit()
 
 

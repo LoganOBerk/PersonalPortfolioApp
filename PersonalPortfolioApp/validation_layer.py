@@ -27,9 +27,10 @@ class Validator:
     # PRECONDITION:
     # POSTCONDITION:
     @staticmethod
-    def portfolio_validator(userAccount, portfolioName) -> bool:
+    def portfolio_validator(userAccount, portfolioName, create) -> bool:
         # TODO: Validate that portfolioName doesnt already exist
         # TODO: Add any other validation you want, AKA empty name insert
+        # TODO: ensure creation only is allowed when portfolio doesnt exist and removal is only allowed when it does
         pass
 
 
@@ -67,4 +68,14 @@ class Validator:
         # TODO: get price of stock from api
         # TODO: Validate that the user has sufficient balance for the requested stock and amount
         # TODO: if user is selling we return true by default
+        pass
+
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    @staticmethod
+    def fund_validator(funds) -> bool:
+        # TODO: validate that the funds are positive and reasonable within discrecion
         pass

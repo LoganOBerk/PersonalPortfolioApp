@@ -36,12 +36,32 @@ class Service:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
+    def fund_account(self, userAccount, funds):
+        userAccount.add_funds(funds)
+        #TODO: update db funds
+        pass
+
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
     def create_portfolio(self, userAccount, portfolioName) -> None:
         # TODO: add new empty portfolio to userAccount object
         userAccount.portfolios[portfolioName].id = self.db.insert_portfolio(
             user_id=userAccount.id,
             portfolioName=portfolioName
         )
+        pass
+
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    def remove_portfolio(self, userAccount, portfolioName) -> None:
+        userAccount.remove_portfolio(portfolioName)
+        #TODO: call remove function for removing portfolio from db
         pass
 
 
