@@ -2,10 +2,12 @@
   "ExpandedNodes": [
     "",
     "\\domain_models",
+    "\\integration_layer",
     "\\interface_layer",
     "\\persistence_layer",
-    "\\service_layer"
+    "\\service_layer",
+    "\\validation_layer"
   ],
-  "SelectedNode": "\\service_layer\\service.py",
+  "SelectedNode": "\\bootstrap.py",
   "PreviewInSolutionExplorer": false
 }
