@@ -1,4 +1,6 @@
+from email.policy import default
 import sys
+from collections import defaultdict
 from domain_models import *
 
 
@@ -114,13 +116,13 @@ class Service:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def retrieve_stored_data(self, login : str) -> tuple[tuple, list[tuple], dict[int, list[tuple]]]:
+    def retrieve_stored_data(self, login : str) -> tuple[tuple, list[tuple], list[tuple]]:
        
         stored_user = self.db.pull_user(login)
         stored_portfolios = self.db.pull_portfolios(stored_user[0])
         stored_stocks = self.db.pull_stocks(stored_user[0])
 
-        stored_stocks = self.assign_portfolio_allocations(stored_stocks)
+        
         
 
         return stored_user, stored_portfolios, stored_stocks
@@ -131,14 +133,9 @@ class Service:
     # PRECONDITION:
     # POSTCONDITION:
     def assign_portfolio_allocations(self, stored_stocks : list[tuple]) -> dict[int, list[tuple]]:
-        portfolio_assignments = {}
-
+        portfolio_assignments = defaultdict(list)
         for stock in stored_stocks:
             p_id = stock[0]
-
-            if p_id not in portfolio_assignments:
-                portfolio_assignments[p_id] = []
-
             portfolio_assignments[p_id].append(stock[1:])
 
         return portfolio_assignments
@@ -160,7 +157,8 @@ class Service:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def populate_user_portfolios(self, user_portfolios : dict[str, Portfolio], stored_portfolios : list[tuple], stored_stocks : dict[int, list[tuple]]) -> None:
+    def populate_user_portfolios(self, user_portfolios : dict[str, Portfolio], stored_portfolios : list[tuple], stored_stocks : list[tuple]) -> None:
+        stored_stocks = self.assign_portfolio_allocations(stored_stocks)
 
         for portfolio in stored_portfolios:
 
