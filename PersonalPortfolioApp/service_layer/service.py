@@ -116,15 +116,32 @@ class Service:
     # POSTCONDITION:
     def retrieve_stored_data(self, login : str) -> tuple[tuple, list[tuple], dict[int, list[tuple]]]:
        
-        user_info = self.db.pull_user(login)
-        stored_portfolios = self.db.pull_portfolios(user_info[0])
-        stored_stocks = {}
-        for portfolio in stored_portfolios:
-            p_id = portfolio[0]
-            stored_stocks[p_id] = self.db.pull_stocks(p_id)
+        stored_user = self.db.pull_user(login)
+        stored_portfolios = self.db.pull_portfolios(stored_user[0])
+        stored_stocks = self.db.pull_stocks(stored_user[0])
+
+        stored_stocks = self.assign_portfolio_allocations(stored_stocks)
         
 
-        return user_info, stored_portfolios, stored_stocks
+        return stored_user, stored_portfolios, stored_stocks
+
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    def assign_portfolio_allocations(self, stored_stocks : list[tuple]) -> dict[int, list[tuple]]:
+        portfolio_assignments = {}
+
+        for stock in stored_stocks:
+            p_id = stock[0]
+
+            if p_id not in portfolio_assignments:
+                portfolio_assignments[p_id] = []
+
+            portfolio_assignments[p_id].append(stock[1:])
+
+        return portfolio_assignments
 
 
     # INPUT:
@@ -132,9 +149,7 @@ class Service:
     # PRECONDITION:
     # POSTCONDITION:
     def populate_user_account(self, user_account : User, login : str) -> None:
-        account_info = self.retrieve_stored_data(login)
-
-        stored_user, stored_portfolios, stored_stocks = account_info
+        stored_user, stored_portfolios, stored_stocks = self.retrieve_stored_data(login)
 
         user_account.id, user_account.login, user_account.password, user_account.balance = stored_user
 
@@ -154,7 +169,7 @@ class Service:
 
             user_portfolios[p_name] = Portfolio(id=p_id,name=p_name)
 
-            self.populate_portfolio_stocks(user_portfolios[p_name].stocks, stored_stocks[p_id])
+            self.populate_portfolio_stocks(user_portfolios[p_name].stocks, stored_stocks.get(p_id, []))
     
 
     # INPUT:

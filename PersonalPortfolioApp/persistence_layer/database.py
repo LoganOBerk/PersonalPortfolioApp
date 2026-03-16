@@ -120,18 +120,19 @@ class Database:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
-    def pull_stocks(self, portfolio_id : int) -> list[tuple]:
+    def pull_stocks(self, user_id : int) -> list[tuple]:
         cursor = self.conn.cursor()
 
         pull_stocks = f'''
-            SELECT id, ticker, quantity
-            FROM stocks
-            WHERE portfolio_id = ?
+            SELECT s.portfolio_id, s.id, s.ticker, s.quantity
+            FROM stocks s
+            JOIN portfolios p ON s.portfolio_id = p.id
+            WHERE p.user_id = ?
         '''
 
         try:
 
-            cursor.execute(pull_stocks, (portfolio_id,))
+            cursor.execute(pull_stocks, (user_id,))
 
         except SqliteError as e:
             self.conn.rollback()
