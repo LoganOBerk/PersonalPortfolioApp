@@ -23,8 +23,8 @@ class App:
     # POSTCONDITION:
     def init(self, testing=False) -> None:
 
-        db_dir = 'AppData'
-        db_source = 'app_data.db'
+        db_dir = 'app_data'
+        db_source = 'investment_app.db'
 
         db_path = os.path.join(db_dir, db_source)
 

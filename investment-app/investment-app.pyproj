@@ -2,17 +2,16 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>5cd7ce3a-d338-4a3c-9c8c-c595f3d9e84a</ProjectGuid>
+    <ProjectGuid>d8c6b813-0337-4970-aa65-7baff20b5b20</ProjectGuid>
     <ProjectHome>.</ProjectHome>
     <StartupFile>bootstrap.py</StartupFile>
     <SearchPath>
     </SearchPath>
     <WorkingDirectory>.</WorkingDirectory>
     <OutputPath>.</OutputPath>
-    <Name>PersonalPortfolioApp</Name>
-    <RootNamespace>PersonalPortfolioApp</RootNamespace>
+    <Name>investment-app</Name>
+    <RootNamespace>investment-app</RootNamespace>
     <InterpreterId>MSBuild|local_env|$(MSBuildProjectFullPath)</InterpreterId>
-    <SuppressPackageInstallationPrompt>True</SuppressPackageInstallationPrompt>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -23,30 +22,54 @@
     <EnableUnmanagedDebugging>false</EnableUnmanagedDebugging>
   </PropertyGroup>
   <ItemGroup>
-    <Compile Include="domain_models\__init__.py" />
-    <Compile Include="integration_layer\api.py" />
-    <Compile Include="bootstrap.py" />
-    <Compile Include="integration_layer\__init__.py" />
-    <Compile Include="interface_layer\cli.py" />
-    <Compile Include="interface_layer\__init__.py" />
-    <Compile Include="persistence_layer\database.py" />
-    <Compile Include="domain_models\portfolio.py" />
-    <Compile Include="persistence_layer\__init__.py" />
-    <Compile Include="service_layer\service.py" />
-    <Compile Include="domain_models\stock.py" />
-    <Compile Include="domain_models\user.py" />
-    <Compile Include="service_layer\__init__.py" />
-    <Compile Include="validation_layer\validator.py" />
-    <Compile Include="interface_layer\visualizer.py" />
-    <Compile Include="validation_layer\__init__.py" />
+    <Content Include="domain_models\__pycache__\portfolio.cpython-314.pyc" />
+    <Content Include="domain_models\__pycache__\stock.cpython-314.pyc" />
+    <Content Include="domain_models\__pycache__\user.cpython-314.pyc" />
+    <Content Include="domain_models\__pycache__\__init__.cpython-314.pyc" />
+    <Content Include="integration_layer\__pycache__\api.cpython-314.pyc" />
+    <Content Include="integration_layer\__pycache__\__init__.cpython-314.pyc" />
+    <Content Include="interface_layer\__pycache__\cli.cpython-314.pyc" />
+    <Content Include="interface_layer\__pycache__\visualizer.cpython-314.pyc" />
+    <Content Include="interface_layer\__pycache__\__init__.cpython-314.pyc" />
+    <Content Include="persistence_layer\__pycache__\database.cpython-314.pyc" />
+    <Content Include="persistence_layer\__pycache__\__init__.cpython-314.pyc" />
+    <Content Include="requirements.txt" />
+    <Content Include="service_layer\__pycache__\service.cpython-314.pyc" />
+    <Content Include="service_layer\__pycache__\__init__.cpython-314.pyc" />
+    <Content Include="validation_layer\__pycache__\validator.cpython-314.pyc" />
+    <Content Include="validation_layer\__pycache__\__init__.cpython-314.pyc" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="interface_layer\" />
-    <Folder Include="integration_layer\" />
     <Folder Include="domain_models\" />
-    <Folder Include="validation_layer\" />
-    <Folder Include="service_layer\" />
+    <Folder Include="domain_models\__pycache__\" />
+    <Folder Include="integration_layer\" />
+    <Folder Include="integration_layer\__pycache__\" />
+    <Folder Include="interface_layer\" />
+    <Folder Include="interface_layer\__pycache__\" />
     <Folder Include="persistence_layer\" />
+    <Folder Include="persistence_layer\__pycache__\" />
+    <Folder Include="service_layer\" />
+    <Folder Include="service_layer\__pycache__\" />
+    <Folder Include="validation_layer\" />
+    <Folder Include="validation_layer\__pycache__\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="bootstrap.py" />
+    <Compile Include="domain_models\portfolio.py" />
+    <Compile Include="domain_models\stock.py" />
+    <Compile Include="domain_models\user.py" />
+    <Compile Include="domain_models\__init__.py" />
+    <Compile Include="integration_layer\api.py" />
+    <Compile Include="integration_layer\__init__.py" />
+    <Compile Include="interface_layer\cli.py" />
+    <Compile Include="interface_layer\visualizer.py" />
+    <Compile Include="interface_layer\__init__.py" />
+    <Compile Include="persistence_layer\database.py" />
+    <Compile Include="persistence_layer\__init__.py" />
+    <Compile Include="service_layer\service.py" />
+    <Compile Include="service_layer\__init__.py" />
+    <Compile Include="validation_layer\validator.py" />
+    <Compile Include="validation_layer\__init__.py" />
   </ItemGroup>
   <ItemGroup>
     <Interpreter Include="local_env\">
@@ -58,9 +81,6 @@
       <PathEnvironmentVariable>PYTHONPATH</PathEnvironmentVariable>
       <Architecture>X64</Architecture>
     </Interpreter>
-  </ItemGroup>
-  <ItemGroup>
-    <Content Include="requirements.txt" />
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)\Python Tools\Microsoft.PythonTools.targets" />
   <!-- Uncomment the CoreCompile target to enable the Build command in
