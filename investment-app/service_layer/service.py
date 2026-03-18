@@ -1,4 +1,3 @@
-from importlib.resources import Package
 import sys
 from collections import defaultdict
 from domain_models import *
@@ -37,7 +36,6 @@ class Service:
         #TODO: update db funds
         user_account.add_funds(funds_request)
         
-
 
     # INPUT:
     # OUTPUT:
@@ -124,6 +122,7 @@ class Service:
 
         return packaged_data
 
+
     # INPUT:
     # OUTPUT:
     # PRECONDITION:
@@ -133,9 +132,6 @@ class Service:
         stored_user = self.db.pull_user(login)
         stored_portfolios = self.db.pull_portfolios(stored_user[0])
         stored_stocks = self.db.pull_stocks(stored_user[0])
-
-        
-        
 
         return stored_user, stored_portfolios, stored_stocks
 
