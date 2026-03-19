@@ -227,11 +227,13 @@ class Cli:
             packaged_data = self.serv.package_portfolio_data(portfolio)
             
             self.vis.display_pie_chart(packaged_data)
+
             # TODO: Portfolio contents display
             # TODO: Display selection options
             # TODO: Selection input receiver
-           
-            self.vis.close_chart()
+
+            self.vis.close_chart() #After user makes a selection close the chart
+
             if selection == 1:
                 self.display_stock_transaction_menu(portfolio, purchase=True)
             elif selection == 2:
