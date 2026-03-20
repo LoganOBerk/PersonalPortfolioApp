@@ -12,6 +12,7 @@
     <Name>investment-app</Name>
     <RootNamespace>investment-app</RootNamespace>
     <InterpreterId>MSBuild|local_env|$(MSBuildProjectFullPath)</InterpreterId>
+    <SuppressPackageInstallationPrompt>True</SuppressPackageInstallationPrompt>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>

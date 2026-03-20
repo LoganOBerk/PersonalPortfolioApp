@@ -1,6 +1,11 @@
 import sys
+from persistence_layer import DatabaseError
 from collections import defaultdict
 from domain_models import *
+
+
+class ServiceError(Exception):
+    pass
 
 
 # PURPOSE:
@@ -14,8 +19,11 @@ class Service:
     # PRECONDITION:
     # POSTCONDITION:
     def create_account(self, credentials : tuple[str, str]) -> None:
+        try:
         # TODO: Add user to the db
-        pass
+            pass
+        except DatabaseError as e:
+            raise ServiceError("Failed to create account") from e
 
 
     # INPUT:
@@ -24,8 +32,11 @@ class Service:
     # POSTCONDITION:
     def find_account(self, login : str) -> User:
         # TODO: Create user object
+        try:
         # TODO: Populate user object
-        pass
+            pass
+        except DatabaseError as e:
+            raise ServiceError("Failed to find account") from e
 
 
     # INPUT:
@@ -33,7 +44,12 @@ class Service:
     # PRECONDITION:
     # POSTCONDITION:
     def fund_account(self, user_account : User, funds_request : float) -> None:
+        try:
         #TODO: update db funds
+            pass
+        except DatabaseError as e:
+            raise ServiceError("Failed to update funds") from e
+
         user_account.add_funds(funds_request)
         
 
@@ -42,7 +58,13 @@ class Service:
     # PRECONDITION:
     # POSTCONDITION:
     def create_portfolio(self, user_account : User, portfolio_name : str) -> None:
-        p_id = self.db.insert_portfolio(user_account.id, portfolio_name)
+        try:
+
+            p_id = self.db.insert_portfolio(user_account.id, portfolio_name)
+
+        except DatabaseError as e:
+            raise ServiceError("Failed to create portfolio") from e
+
         # TODO: add new empty portfolio to user_account object
         user_account.portfolios[portfolio_name].id = p_id
 
@@ -52,7 +74,12 @@ class Service:
     # PRECONDITION:
     # POSTCONDITION:
     def remove_portfolio(self, user_account : User, portfolio_name : str) -> None:
+        try:
         #TODO: call remove function for removing portfolio from db
+            pass
+        except DatabaseError as e:
+            raise ServiceError("Failed to remove portfolio") from e
+
         user_account.remove_portfolio(portfolio_name)
 
 
@@ -68,12 +95,17 @@ class Service:
 
         s_id = None
 
-        if portfolio.has_stock(ticker):
-            # TODO: update the db
-            pass
-        else:
-             s_id = self.db.insert_stock(portfolio.id, shares_requested)
-             
+        try:
+
+            if portfolio.has_stock(ticker):
+                # TODO: update the db
+                pass
+            else:
+                 s_id = self.db.insert_stock(portfolio.id, shares_requested)
+        
+        except DatabaseError as e:
+            raise ServiceError("Failed to execute buy") from e
+
         portfolio.buy_shares(shares_requested)
 
         if s_id != None:
@@ -87,16 +119,20 @@ class Service:
     def execute_sell(self, user_account : User, portfolio : Portfolio, shares_requested : tuple[str, int]) -> None:
         # TODO: call api to get stock price
         # TODO: add funds to user account
-        # TODO: remove the stock(s) from the portfolio
         
         ticker, quantity = shares_requested
 
-        if portfolio.has_stock(ticker) and quantity == portfolio.stocks[ticker].quantity:
-            # TODO: remove from the db
-            pass
-        else:
-            # TODO: update the db
-            pass
+        try:
+
+            if portfolio.has_stock(ticker) and quantity == portfolio.stocks[ticker].quantity:
+                # TODO: remove from the db
+                pass
+            else:
+                # TODO: update the db
+                pass
+
+        except DatabaseError as e:
+            raise ServiceError("Failed to execute sell") from e
 
         portfolio.sell_shares(shares_requested)
 
@@ -106,7 +142,13 @@ class Service:
     # PRECONDITION:
     # POSTCONDITION:
     def credentials_match(self, credentials : tuple[str, str]) -> bool:
-        u_id = self.db.resolve_credentials(credentials)
+        try:
+
+            u_id = self.db.resolve_credentials(credentials)
+
+        except DatabaseError as e:
+            raise ServiceError("Failed to match credentials") from e
+
         return u_id != None
 
 

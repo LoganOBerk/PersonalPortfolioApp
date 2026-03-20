@@ -1,4 +1,4 @@
-from persistence_layer import DatabaseError
+from service_layer import ServiceError
 
 # PURPOSE:
 class Cli:
@@ -81,8 +81,8 @@ class Cli:
                     else:
                         self.user_account = self.serv.find_account(login)
 
-                except DatabaseError as e:
-                    print(f"Action Failed: {str(e)}")
+                except ServiceError as e:
+                    print(f"ERROR: {e}")
                     continue
                     
             elif selection != 2:
@@ -160,8 +160,8 @@ class Cli:
                     self.serv.fund_account(user_account, funds_request)
                     # TODO: Msg that indicates a action was successfully performed
 
-                except DatabaseError as e:
-                    print(f"Action Failed: {str(e)}")
+                except ServiceError as e:
+                    print(f"ERROR: {e}")
                     continue
             elif selection != 2:
                 # TODO: invalid selection error msg
@@ -207,8 +207,8 @@ class Cli:
                         self.serv.remove_portfolio(user_account, name_request)
                         # TODO: Msg that indicates a action was successfully performed
 
-                except DatabaseError as e:
-                    print(f"Action Failed: {str(e)}")
+                except ServiceError as e:
+                    print(f"ERROR: {e}")
                     continue
             elif selection != 2:
                 # TODO: invalid selection error msg
@@ -298,8 +298,8 @@ class Cli:
                         self.serv.execute_sell(self.user_account, portfolio, shares_requested)
                         # TODO: Msg that indicates a action was successfully performed
 
-                except DatabaseError as e:
-                    print(f"Action Failed: {str(e)}")
+                except ServiceError as e:
+                    print(f"ERROR: {e}")
                     continue
 
             elif selection != 2:
