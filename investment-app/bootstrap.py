@@ -73,6 +73,7 @@ class App:
     #     -App; see init(), and establish_path() POSTCONDITION
     # POSTCONDITION: 
     #     -terminal; Cli starts execution on terminal
+    #RAISES: None
     def run(self) -> None:
         self.display.execute()
 
