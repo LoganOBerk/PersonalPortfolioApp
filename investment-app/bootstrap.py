@@ -17,6 +17,25 @@ class App:
         self.init(testing=testing)
 
 
+    # INPUT: bool to indicate testing status
+    # OUTPUT: None
+    # PRECONDITION: Default App object is constructed
+    # POSTCONDITION: App is initialized based on the testing bool,
+    # dependancies are properly injected 
+    def init(self, testing=False) -> None:
+        if testing:
+            db_path = ':memory:'
+        else:
+            db_path = self.establish_path('investment-app.db')
+        
+        
+        self.db = Database(db_path)
+        self.serv = Service(self.db)
+        self.vis = Visualizer()
+        self.val = Validator(self.serv)
+        self.display = Cli(self.serv, self.val, self.vis)
+
+
     # INPUT: 
     # OUTPUT:
     # PRECONDITION: 
@@ -31,30 +50,6 @@ class App:
         return db_dir / db_source
 
 
-    # INPUT: bool to indicate testing status
-    # OUTPUT: None
-    # PRECONDITION: Default App object is constructed
-    # POSTCONDITION: App is initialized based on the testing bool,
-    # dependancies are properly injected 
-    def init(self, testing=False) -> None:
-        db_path = self.establish_path('investment-app.db')
-
-        if testing:
-            self.db = Database(':memory:')
-            self.serv = Service(self.db)
-            self.vis = Visualizer()
-            self.val = Validator(self.serv)
-            self.display = Cli(self.serv, self.val, self.vis)
-            return
-        
-
-        self.db = Database(db_path)
-        self.serv = Service(self.db)
-        self.vis = Visualizer()
-        self.val = Validator(self.serv)
-        self.display = Cli(self.serv, self.val, self.vis)
-
-    
     # INPUT: None
     # OUTPUT: None
     # PRECONDITION: App object is correctly initialized with proper dependancies
