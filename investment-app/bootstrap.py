@@ -5,8 +5,9 @@ from validation_layer import Validator
 from interface_layer import *
 
 
-# PURPOSE: To provide a high level initialization method,
-# allows for clean dependancy injection and easy swaps between test mode
+# PURPOSE: 
+#         -App provides initialization abstraction
+#         -Allows for clean dependency injection and easy swaps between test mode
 class App:
     def __init__(self, testing=False):
         self.db = None
@@ -14,15 +15,23 @@ class App:
         self.val = None
         self.display = None
         self.vis = None
-        self.init(testing=testing)
+        self.init(testing)
 
 
-    # INPUT: bool to indicate testing status
+    # INPUT: 
+    #     -testing(bool); app testing mode On or Off
     # OUTPUT: None
-    # PRECONDITION: Default App object is constructed
-    # POSTCONDITION: App is initialized based on the testing bool,
-    # dependancies are properly injected 
-    def init(self, testing=False) -> None:
+    # PRECONDITION: 
+    #     -testing; is not None
+    #     -App; all non static dependencies(db,serv,val,display,vis) are initialized to None
+    # POSTCONDITION:
+    #     -db; Database object constructed with established path
+    #     -serv; Service object constructed with db injection
+    #     -vis; Visualizer object constructed
+    #     -val; Validator object constructed with serv injection
+    #     -display; Cli object constructed with serv, val, vis injection
+    # RAISES: None
+    def init(self, testing : bool) -> None:
         if testing:
             db_path = ':memory:'
         else:
@@ -36,10 +45,16 @@ class App:
         self.display = Cli(self.serv, self.val, self.vis)
 
 
-    # INPUT: 
+    # INPUT:
+    #     -db_source(str); database filename
     # OUTPUT:
-    # PRECONDITION: 
+    #     -db_path(Path); directory path of the database file
+    # PRECONDITION:
+    #     -db_source; has proper filename extension '.db' 
     # POSTCONDITION:
+    #     -bootstrap.py parent directory; subdirectory 'app_data' exists
+    #     -db_path; returned with relative path to database file
+    # RAISES: None
     def establish_path(self, db_source : str) -> Path:
         base_dir = Path(__file__).parent
 
@@ -47,13 +62,17 @@ class App:
 
         db_dir.mkdir(exist_ok = True)
 
-        return db_dir / db_source
+        db_path = db_dir / db_source
+
+        return db_path 
 
 
     # INPUT: None
     # OUTPUT: None
-    # PRECONDITION: App object is correctly initialized with proper dependancies
-    # POSTCONDITION: The application starts running
+    # PRECONDITION: 
+    #     -App; see init(), and establish_path() POSTCONDITION
+    # POSTCONDITION: 
+    #     -terminal; Cli starts execution on terminal
     def run(self) -> None:
         self.display.execute()
 

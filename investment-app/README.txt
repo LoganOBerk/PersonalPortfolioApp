@@ -25,7 +25,7 @@ value None so readers know the field was considered.
 #    -<var_name>(type); <what it represents>
  
 #PRECONDITION:   if N/A - None
-#    -<param_name>; <value constraint>
+#    -<param_name or state>; <value constraint>
  
 #POSTCONDITION:  if N/A - None
 #    -<param or state>; <observable guarantee after return>
