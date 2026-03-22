@@ -18,21 +18,16 @@ value None so readers know the field was considered.
   FUNCTIONS
 ----------------------------------------------------------------
 
-#INPUT:          if N/A - None
+# INPUT: if N/A - None
 #    -<param_name>(type); <what it represents>
- 
-#OUTPUT:         if N/A - None
+# OUTPUT: if N/A - None
 #    -<var_name>(type); <what it represents>
- 
-#PRECONDITION:   if N/A - None
+# PRECONDITION: if N/A - None
 #    -<param_name or state>; <value constraint>
- 
-#POSTCONDITION:  if N/A - None
+# POSTCONDITION: if N/A - None
 #    -<param or state>; <observable guarantee after return>
- 
-#RAISES:         if N/A - None
+# RAISES: if N/A - None
 #    -<ExceptionType>; <condition that triggers it>
- 
 def function_name(param_name: type) -> type:
 	return var_name
     	
@@ -43,7 +38,7 @@ def function_name(param_name: type) -> type:
 
   Semicolons    Separate name/type from description with "; "
 
-  Indentation   Labels flush-left; entries indented with TAB
+  Indentation   Labels flush-left one space; entries indented with TAB
 
   Types         Use Python builtins (int, str, list, dict, None, etc.)
                 or typing module (Any, Optional, List[int], etc.)

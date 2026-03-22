@@ -3,21 +3,30 @@ from persistence_layer import DatabaseError
 from collections import defaultdict
 from domain_models import *
 
-# PURPOSE: To provide a wrapper for errors that propagate from service
+# PURPOSE: 
+#   -ServiceError provides a central service error abstraction
+#   -Allows for exceptions to be re-raised as a general errortype for this layer
 class ServiceError(Exception):
     pass
 
 
-# PURPOSE: To provide a central layer for domain model population and handle user requests 
+# PURPOSE:
+#   -Service provides a routing/serving, and memory populator abstraction
+#   -Decouples business logic from the database and interface layers
 class Service:
     def __init__(self, database):
         self.db = database
 
 
-    # INPUT: tuple of two strings representing user credentials; login, password
+    # INPUT: 
+    #   -credentials(tuple[str,str]); user login and password
     # OUTPUT: None
-    # PRECONDITION: credentials passed basic validation
-    # POSTCONDITION: a database call is made to attempt to update the database
+    # PRECONDITION:
+    #   -credentials; see Validator.account_validator() POSTCONDITION
+    # POSTCONDITION: 
+    #   -db; see Database.insert_user() POSTCONDITION
+    # RAISES: 
+    #   -ServiceError; database call fails
     def create_account(self, credentials : tuple[str, str]) -> None:
         try:
         # TODO: Add user to the db
@@ -26,10 +35,16 @@ class Service:
             raise ServiceError("Failed to create account") from e
 
 
-    # INPUT: string representing user login
-    # OUTPUT: User object
-    # PRECONDITION: user has already entered valid credentials which exist in database
-    # POSTCONDITION: a user object is created and an attempt is made to populate with database information
+    # INPUT:
+    #   -login(str); user login
+    # OUTPUT:
+    #   -user(User); represents current user
+    # PRECONDITION:
+    #   -login; a user with this login exists in the database
+    # POSTCONDITION: 
+    #   -user; populated with id, login, balance and all portfolios and respective stocks
+    # RAISES:
+    #   -ServiceError; database call fails
     def find_account(self, login : str) -> User:
         # TODO: Create user object
         try:
@@ -39,10 +54,18 @@ class Service:
             raise ServiceError("Failed to find account") from e
 
 
-    # INPUT: User, float representing funds requested
+    # INPUT:
+    #   -user_account(User); current user account
+    #   -funds_request(float); amount of money to add to balance 
     # OUTPUT: None
-    # PRECONDITION: funds requested must be positive
-    # POSTCONDITION: an attempt is made to update the user funds in the database and then in memory funds are updated if successful
+    # PRECONDITION:
+    #   -user_account; account info is up to date
+    #   -funds_request; funds requested are > 0
+    # POSTCONDITION: 
+    #   -db; see Database.update_funds() POSTCONDITION
+    #   -user_account; funds are added to account
+    # RAISES:
+    #   -ServiceError; database call fails
     def fund_account(self, user_account : User, funds_request : float) -> None:
         try:
         #TODO: update db funds
@@ -53,10 +76,18 @@ class Service:
         user_account.add_funds(funds_request)
         
 
-    # INPUT: User, string representing a portfolio name
+    # INPUT:
+    #   -user_account(User); current user account
+    #   -portfolio_name(str); name of portfolio to create
     # OUTPUT: None
-    # PRECONDITION: portfolio name does not exist with current user and is a valid name
-    # POSTCONDITION: an attempt is made to insert new portfolio into the database if successful in memory user is given an empty named portfolio and id is assigned
+    # PRECONDITION:
+    #   -user_account; account info is up to date
+    #   -portfolio_name; see Validator.portfolio_validator() POSTCONDITION
+    # POSTCONDITION: 
+    #   -db; see Database.insert_portfolio() POSTCONDITION
+    #   -user_account; empty portfolio with portfolio_name is added to account
+    # RAISES:
+    #   -ServiceError; database call fails
     def create_portfolio(self, user_account : User, portfolio_name : str) -> None:
         try:
 
@@ -69,10 +100,18 @@ class Service:
         user_account.portfolios[portfolio_name].id = p_id
 
 
-    # INPUT: User, string representing portfolio name
+    # INPUT:
+    #   -user_account(User); current user account
+    #   -portfolio_name(str); name of portfolio to remove
     # OUTPUT: None
-    # PRECONDITION: user contains this portfolio
-    # POSTCONDITION: portfolio removal from database is attempted, if successful in memory portfolio is removed
+    # PRECONDITION:
+    #   -user_account; account info is up to date
+    #   -portfolio_name; see Validator.portfolio_validator() POSTCONDITION
+    # POSTCONDITION:
+    #   -db; see Database.delete_portfolio() POSTCONDITION
+    #   -user_account; portfolio is removed from in memory account
+    # RAISES:
+    #   -ServiceError; database call fails
     def remove_portfolio(self, user_account : User, portfolio_name : str) -> None:
         try:
         #TODO: call remove function for removing portfolio from db
@@ -83,10 +122,21 @@ class Service:
         user_account.remove_portfolio(portfolio_name)
 
 
-    # INPUT: User, Portfolio, tuple of string and int representing ticker, quantity
+    # INPUT: 
+    #   -user_account(User); current user account
+    #   -portfolio(Portfolio); some portfolio belonging to current user
+    #   -shares_requested(tuple[str,int]); requested stock ticker and quantity
     # OUTPUT: None
-    # PRECONDITION: user account and portfolio is properly populated in memory and the user has enough balance to buy
-    # POSTCONDITION: an attempt to update or insert into the database is made if successful buy the shares in memory and if the stock is new update the in memory stock id
+    # PRECONDITION:
+    #   -user_account; account info is up to date in memory, and see Validator.sufficient_balance_validator() POSTCONDITION
+    #   -portfolio; portfolio is up to date
+    #   -shares_requested; see Validator.stock_ticker_validator() & Validator.stock_quantity_validator() POSTCONDITIONS
+    # POSTCONDITION:
+    #   -db; if portfolio already has the requested share see Database.update_stock(), else see Database.insert_stock() POSTCONDITION
+    #   -user_account; portfolio belonging to user is edited
+    #   -portfolio; stock with matching ticker is added with quantity or updated
+    # RAISES:
+    #   -ServiceError; database call fails
     def execute_buy(self, user_account : User, portfolio : Portfolio, shares_requested : tuple[str, int]) -> None:
         # TODO: call api to get stock price
         # TODO: subtract funds from user account

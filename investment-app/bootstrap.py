@@ -6,8 +6,8 @@ from interface_layer import *
 
 
 # PURPOSE: 
-#     -App provides initialization abstraction
-#     -Allows for clean dependency injection and easy swaps between test mode
+#   -App provides initialization abstraction
+#   -Allows for clean dependency injection and easy swaps between test mode
 class App:
     def __init__(self, testing=False):
         self.db = None
@@ -19,17 +19,17 @@ class App:
 
 
     # INPUT: 
-    #     -testing(bool); app testing mode On or Off
+    #   -testing(bool); app testing mode On or Off
     # OUTPUT: None
     # PRECONDITION: 
-    #     -testing; is not None
-    #     -App; all non static dependencies(db,serv,val,display,vis) are initialized to None
+    #   -testing; is not None
+    #   -App; all non static dependencies(db,serv,val,display,vis) are initialized to None
     # POSTCONDITION:
-    #     -db; Database object constructed with established filepath
-    #     -serv; Service object constructed with db injection
-    #     -vis; Visualizer object constructed
-    #     -val; Validator object constructed with serv injection
-    #     -display; Cli object constructed with serv, val, vis injection
+    #   -db; Database object constructed with established filepath
+    #   -serv; Service object constructed with db injection
+    #   -vis; Visualizer object constructed
+    #   -val; Validator object constructed with serv injection
+    #   -display; Cli object constructed with serv, val, vis injection
     # RAISES: None
     def init(self, testing : bool) -> None:
         if testing:
@@ -46,14 +46,14 @@ class App:
 
 
     # INPUT:
-    #     -db_source(str); database filename
+    #   -db_source(str); database filename
     # OUTPUT:
-    #     -db_path(Path); directory path of the database file
+    #   -db_path(Path); directory path of the database file
     # PRECONDITION:
-    #     -db_source; has proper filename extension '.db' 
+    #   -db_source; has proper filename extension '.db' 
     # POSTCONDITION:
-    #     -bootstrap.py parent directory; subdirectory 'app_data' exists
-    #     -db_path; returned with relative path to database file
+    #   -bootstrap.py parent directory; subdirectory 'app_data' exists
+    #   -db_path; returned with relative path to database file
     # RAISES: None
     def establish_path(self, db_source : str) -> Path:
         base_dir = Path(__file__).parent
@@ -70,9 +70,9 @@ class App:
     # INPUT: None
     # OUTPUT: None
     # PRECONDITION: 
-    #     -App; see init(), and establish_path() POSTCONDITION
+    #   -App; see init(), and establish_path() POSTCONDITION
     # POSTCONDITION: 
-    #     -terminal; Cli starts execution on terminal
+    #   -terminal; Cli starts execution on terminal
     #RAISES: None
     def run(self) -> None:
         self.display.execute()
