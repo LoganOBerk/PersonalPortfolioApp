@@ -41,7 +41,10 @@ def function_name(param_name: type) -> type:
   Indentation   Labels flush-left one space; entries indented with TAB
 
   Types         Use Python builtins (int, str, list, dict, None, etc.)
-                or typing module (Any, Optional, List[int], etc.)
+                or typing module (Any, Optional, List[int], etc.) 
+                Project-defined types (e.g. User, Portfolio) are
+                listed in TYPES section below.
+                All persistent types have id (database primary key).
 
   Constraints   State value constraints, not types
                 ("n > 0" not "must be int")
@@ -49,3 +52,14 @@ def function_name(param_name: type) -> type:
   Guarantees    Describe observable state, not implementation details
 
   Be brief      Short phrase per entry, not full sentences
+
+
+----------------------------------------------------------------
+  TYPES
+----------------------------------------------------------------
+
+  User         Represents a user account; holds login, balance and collection of portfolios
+  
+  Portfolio    Represents named collection of stocks
+
+  Stock        Represents a stock holding; ticker and quantity

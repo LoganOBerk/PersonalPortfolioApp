@@ -1,12 +1,16 @@
 import sqlite3 as sqlite
 from sqlite3 import Error as SqliteError
 
-# PURPOSE: To add a general wrapper for database related errors
+# PURPOSE: 
+#   -DatabaseError provides a central database error abstraction
+#   -Allows for exceptions to be re-raised as a general errortype for this layer
 class DatabaseError(Exception):
     pass
 
 
-# PURPOSE: To provide a clean layer of abstraction for database related operations and initialization
+# PURPOSE: 
+#   -Database provides a SQLite database operation abstraction
+#   -Allows for seperation of database specific operations from buisness logic
 class Database:
     def __init__(self, source):
         self.source = source
@@ -17,9 +21,13 @@ class Database:
 
     # INPUT: None
     # OUTPUT: None
-    # PRECONDITION: Database connection is established with source file and foreign keys are ON
-    # POSTCONDITION: The database is properly initialized to the correct structure
-    def build_database(self):
+    # PRECONDITION:
+    #   -Database; source attached to filepath, connection to source established, foreign keys enabled
+    # POSTCONDITION:
+    #   -database; users, portfolios, and stocks tables exist and are properly linked
+    # RAISES:
+    #   -DatabaseError; SqliteError occurs during table creation
+    def build_database(self) -> None:
         cursor = self.conn.cursor()
 
         create_user_table = '''
@@ -65,11 +73,17 @@ class Database:
             raise DatabaseError(f"build_database failed: {e}") from e
 
 
-    # INPUT: string representing user login
-    # OUTPUT: tuple of id, login, balance from database
-    # PRECONDITION: login exists in the database, see postcondition of build_database
-    # POSTCONDITION: a user is attempted to be pulled from the database
-    def pull_user(self, login : str) -> tuple:
+    # INPUT:
+    #   -login(str); user login 
+    # OUTPUT:
+    #   -user_data(tuple[int,str,float]); user data from database id, login, balance
+    # PRECONDITION:
+    #   -login; exists in database
+    # POSTCONDITION:
+    #   -user_data; database information related to user with respective login is retrieved
+    # RAISES:
+    #   -DatabaseError; SqliteError occurs during selection 
+    def pull_user(self, login : str) -> tuple[int, str, float]:
 
         cursor = self.conn.cursor()
 
@@ -87,15 +101,22 @@ class Database:
             self.conn.rollback()
             raise DatabaseError(f"pull_user failed: {e}") from e
         
+        user_data = cursor.fetchone()
 
-        return cursor.fetchone()
+        return user_data
 
 
-    # INPUT: int representing user id
-    # OUTPUT: a list of all user portfolios in tuple; id, name
-    # PRECONDITION: user id exists in the database
-    # POSTCONDITION: all user portfolios are attempted to be pulled from database
-    def pull_portfolios(self, user_id : int) -> list[tuple]:
+    # INPUT:
+    #   -user_id(int); user id number in database
+    # OUTPUT:
+    #   -user_portfolios(list[tuple[int,str]]); list of all portfolios the user has
+    # PRECONDITION:
+    #   -user_id; exists in database  
+    # POSTCONDITION:
+    #   -user_portfolios; database information related to all user portfolios is retrieved
+    # RAISES:
+    #   -DatabaseError; SqliteError occurs during selection
+    def pull_portfolios(self, user_id : int) -> list[tuple[int, str]]:
         cursor = self.conn.cursor()
 
         pull_portfolios = f'''
@@ -112,14 +133,22 @@ class Database:
             self.conn.rollback()
             raise DatabaseError(f"pull_portfolios failed: {e}") from e
 
-        return cursor.fetchall()
+        user_portfolios = cursor.fetchall()
+
+        return user_portfolios
 
 
-    # INPUT: int representing user id
-    # OUTPUT: a list of all stocks that user owns in tuple; portfolio_id, id, ticker, quantity
-    # PRECONDITION: user id exists in database
-    # POSTCONDITION: all user stocks are attempted to be pulled from database
-    def pull_stocks(self, user_id : int) -> list[tuple]:
+    # INPUT:
+    #   -user_id(int); user id number in database 
+    # OUTPUT:
+    #   -user_stocks(list[tuple[int,int,str,int]]); list of all users owned stocks across all portfolios
+    # PRECONDITION:
+    #   -user_id; exists in database
+    # POSTCONDITION:
+    #   -user_stocks; database information for all user owned stocks is retrieved
+    # RAISES:
+    #   -DatabaseError; SqliteError occurs during selection
+    def pull_stocks(self, user_id : int) -> list[tuple[int, int, str, int]]:
         cursor = self.conn.cursor()
 
         pull_stocks = f'''
@@ -137,13 +166,22 @@ class Database:
             self.conn.rollback()
             raise DatabaseError(f"pull_stocks failed: {e}") from e
 
-        return cursor.fetchall()
+        user_stocks = cursor.fetchall()
+
+        return user_stocks
 
 
-    # INPUT: tuple of two strings representing user credentials
-    # OUTPUT: int representing user id
-    # PRECONDITION: credentials are valid based on validation criteria (see validator)
-    # POSTCONDITION: an attempt is made to insert a user with credentials into the database
+    # INPUT:
+    #   -credentials(tuple[str,str]); new user login and password
+    # OUTPUT:
+    #   -u_id(int); the database primary key for the new user
+    # PRECONDITION:
+    #   -credentials; see Validator.account_validator() POSTCONDITION
+    # POSTCONDITION:
+    #   -database; user credentials are used to create a new user entry in database
+    #   -u_id; a user primary key from the database is generated and returned
+    # RAISES:
+    #   -DatabaseError; SqliteError occurs on insert
     def insert_user(self, credentials : tuple[str, str]) -> int:
         cursor = self.conn.cursor()
 
@@ -161,13 +199,24 @@ class Database:
             self.conn.rollback()
             raise DatabaseError(f"insert_user failed: {e}") from e
 
-        return cursor.lastrowid
+        u_id = cursor.lastrowid
+
+        return u_id
 
 
-    # INPUT: int representing user id and int representing portfolio name
-    # OUTPUT: int representing the portfolio id of the new portfolio
-    # PRECONDITION: user id exists in the database and portfolio name has been validated as unique
-    # POSTCONDITION: new portfolio is attempted to be added to the database
+    # INPUT:
+    #   -user_id(int); user id number in database
+    #   -portfolio_name(str); name of new portfolio  
+    # OUTPUT:
+    #   -p_id(int); the database primary key for the new portfolio
+    # PRECONDITION:
+    #   -user_id; user id exists in the database
+    #   -portfolio_name; see Validator.portfolio_validator() POSTCONDITION
+    # POSTCONDITION:
+    #   -database; portfolio name and user id are used to create a new portfolio entry
+    #   -p_id; a portfolio primary key from database is generated and returned
+    # RAISES:
+    #   -DatabaseError; SqliteError occurs during insertion
     def insert_portfolio(self, user_id : int, portfolio_name : str) -> int:
         cursor = self.conn.cursor()
 
@@ -185,13 +234,20 @@ class Database:
             self.conn.rollback()
             raise DatabaseError(f"insert_portfolio failed: {e}") from e
 
-        return cursor.lastrowid
+        p_id = cursor.lastrowid
+
+        return p_id 
 
 
-    # INPUT: int representing the portfolio id
+    # INPUT:
+    #   -portfolio_id(int); portfolio id number in database
     # OUTPUT: None
-    # PRECONDITION: portfolio exists in the database
-    # POSTCONDITION: an attempt to remove the portfolio from the database is made
+    # PRECONDITION:
+    #   -portfolio_id; portfolio id exists in the database
+    # POSTCONDITION:
+    #   -database; portfolio is deleted, deletes CASCADE to stocks, total database removal
+    # RAISES:
+    #   -DatabaseError; SqliteError occurs during delete
     def delete_portfolio(self, portfolio_id : int) -> None:
         cursor = self.conn.cursor()
 
@@ -211,10 +267,19 @@ class Database:
 
 
 
-    # INPUT: int representing portfolio id and tuple of string and int representing requested shares ticker, quantity
-    # OUTPUT: int representing user id
-    # PRECONDITION: portfolio exists in the database and shares requested have been validated
-    # POSTCONDITION: an attempt to insert stock into the database is made
+    # INPUT:
+    #   -portfolio_id(int); portfolio id number in database
+    #   -shares_requested(tuple[str,int]); ticker and quantity of shares requested  
+    # OUTPUT:
+    #   -s_id(int); the database primary key for the new stock
+    # PRECONDITION:
+    #   -portfolio_id; portfolio id exists in the database
+    #   -shares_requested; see Validator.stock_ticker_validator() & Validator.stock_quantity_validator() POSTCONDITIONS
+    # POSTCONDITION:
+    #   -database; stock ticker, quantity and portfolio id are used to create a new stock entry
+    #   -s_id; a stock primary key from database is generated and returned
+    # RAISES:
+    #   -DatabaseError; SqliteError occurs during insertion
     def insert_stock(self, portfolio_id : int, shares_requested : tuple[str, int]) -> int:
         cursor = self.conn.cursor()
 
@@ -234,13 +299,20 @@ class Database:
             self.conn.rollback()
             raise DatabaseError(f"insert_stock failed: {e}") from e
 
-        return cursor.lastrowid
+        s_id = cursor.lastrowid
+
+        return s_id 
 
 
-    # INPUT: int representing stock id 
+    # INPUT:
+    #   -stock_id(int); stock id number in database
     # OUTPUT: None
-    # PRECONDITION: stock exists in database
-    # POSTCONDITION: an attempt to delete the stock from the database is made
+    # PRECONDITION:
+    #   -stock_id; stock id exists in the database
+    # POSTCONDITION:
+    #   -database; stock is deleted, total database removal
+    # RAISES:
+    #   -DatabaseError; SqliteError occurs during delete
     def delete_stock(self, stock_id : int) -> None:
         cursor = self.conn.cursor()
 
@@ -259,10 +331,17 @@ class Database:
             raise DatabaseError(f"delete_stock failed: {e}") from e
 
 
-    # INPUT: int representing a stock id, int representing a quantity to add
+    # INPUT:
+    #   -stock_id(int); stock id number in database 
+    #   -quantity(int); quantity of stocks to add or remove 
     # OUTPUT: None
-    # PRECONDITION: stock exists in database
-    # POSTCONDITION: an attempt to delete the stock from the database is made
+    # PRECONDITION:
+    #   -stock_id; stock id exists in the database
+    #   -quantity; != 0, result of update cannot reduce stock below 0
+    # POSTCONDITION:
+    #   -database; stock information is properly updated
+    # RAISES:
+    #   -DatabaseError; SqliteError occurs during update
     def update_stock(self, stock_id : int, quantity : int) -> None:
         cursor = self.conn.cursor()
 
@@ -282,14 +361,21 @@ class Database:
             raise DatabaseError(f"update_stock failed: {e}") from e
 
 
-    # INPUT: int representing a user id, float representing funds to add to the account
+    # INPUT:
+    #   -user_id(int); user id number in database
+    #   -funds_request(float); amount to be added or removed from balance
     # OUTPUT: None
-    # PRECONDITION: user exists in database, if funds request is negative the balance will not go negative
-    # POSTCONDITION: a user balance database update is attempted
+    # PRECONDITION:
+    #   -user_id; user id exists in database
+    #   -funds_request; != 0, result of update cannot reduce balance below 0 
+    # POSTCONDITION:
+    #   -database; users balance is updated
+    # RAISES:
+    #   -DatabaseError; SqliteError occurs during update
     def update_funds(self, user_id : int, funds_request : float) -> None:
         cursor = self.conn.cursor()
 
-        update_stock = '''
+        update_funds = '''
             UPDATE users
             SET balance = balance + ?
             WHERE id = ?
@@ -297,7 +383,7 @@ class Database:
 
         try:
 
-            cursor.execute(update_stock, (funds_request, user_id))
+            cursor.execute(update_funds, (funds_request, user_id))
             self.conn.commit()
 
         except SqliteError as e:
@@ -305,11 +391,17 @@ class Database:
             raise DatabaseError(f"update_funds failed: {e}") from e
 
 
-    # INPUT: tuple of two stirngs representing user credentials; login, password
-    # OUTPUT: None
-    # PRECONDITION: credentials pass basic validation
-    # POSTCONDITION: an attempt to resolve a user id from database given credentials is made
-    def resolve_credentials(self, credentials : tuple[str, str]) -> None | int:
+    # INPUT:
+    #   -credentials(tuple[str,str]); user login and password
+    # OUTPUT:
+    #   -u_id(int | None); user id or None
+    # PRECONDITION:
+    #   -credentials; see Validator.account_validator() POSTCONDITION
+    # POSTCONDITION:
+    #   -u_id; matched user id if credentials exist in database, None otherwise
+    # RAISES:
+    #   -DatabaseError; SqliteError occurs during selection
+    def resolve_credentials(self, credentials : tuple[str, str]) -> int | None:
         cursor = self.conn.cursor()
 
         resolve_id = '''
@@ -328,7 +420,6 @@ class Database:
 
         user_info = cursor.fetchone()
 
-        if user_info == None:
-            return None
-        else:
-            return user_info[0]
+        u_id = user_info[0] if user_info else None
+        
+        return u_id
