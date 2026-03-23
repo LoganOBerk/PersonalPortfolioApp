@@ -284,7 +284,7 @@ class Service:
     # PRECONDITION:
     #   -login; a user with this login exists in the database
     # POSTCONDITION:
-    #   -user_account; is populated with id, login, balance, all portfolios and respective stocks from database
+    #   -user_account; is populated with id, login, balance, all portfolios along with their stocks from database
     # RAISES: None
     def populate_user_account(self, user_account : User, login : str) -> None:
         stored_user, stored_portfolios, stored_stocks = self.retrieve_stored_data(login)
@@ -294,10 +294,18 @@ class Service:
         self.populate_user_portfolios(user_account.portfolios, stored_portfolios, stored_stocks)
         
 
-    # INPUT: keyed dict of all user portfolios, list of all stored portfolio tuples, list of all stored stock tuples
+    # INPUT:
+    #   -user_portfolios(dict[str,Portfolio]); user portfolios keyed by portfolio name
+    #   -stored_portfolios(list[tuple]); all user portfolios listed as portfolio id, name 
+    #   -stored_stocks(list[tuple]); all user stocks listed as portfolio id, stock id, ticker, quantity
     # OUTPUT: None
-    # PRECONDITION: in memory user portfolios are empty, stored portfolios contains all database data related to user portfolios as does stored stocks
-    # POSTCONDITION: in memory user account portfolios are all populated
+    # PRECONDITION:
+    #   -user_portfolios; is empty
+    #   -stored_portfolios; see Database.pull_portfolios() POSTCONDITION
+    #   -stored_stocks; see Database.pull_stocks() POSTCONDITION
+    # POSTCONDITION:
+    #   -user_portfolios; users portfolios are populated along with their respective stocks
+    # RAISES: None
     def populate_user_portfolios(self, user_portfolios : dict[str, Portfolio], stored_portfolios : list[tuple], stored_stocks : list[tuple]) -> None:
         stored_stocks = self.assign_portfolio_allocations(stored_stocks)
 
@@ -311,10 +319,16 @@ class Service:
             self.populate_portfolio_stocks(user_portfolios[p_name].stocks, stored_stocks.get(p_id, []))
     
 
-    # INPUT: a dict of all in memory portfolio stocks, a list of tuples of all stored stocks related to portfolio 
+    # INPUT:
+    #   -portfolio_stocks(dict[str,Stock]); a users portfolio stocks keyed by ticker 
+    #   -stored_portfolio_stocks(list[tuple]); specific portfolios stock list
     # OUTPUT: None
-    # PRECONDITION: stored portfolio stocks contain all stocks related to the current portfolio
-    # POSTCONDITION: user portfolio is populated with its respective stocks
+    # PRECONDITION:
+    #   -portfolio_stocks; current portfolio has no stocks
+    #   -stored_portfolio_stocks; contains all stocks for given portfolio
+    # POSTCONDITION:
+    #   -portfolio_stocks; current user portfolio is populated with all of its stocks
+    # RAISES: None
     def populate_portfolio_stocks(self, portfolio_stocks : dict[str, Stock], stored_portfolio_stocks : list[tuple]) -> None:
 
         for stock in stored_portfolio_stocks:
@@ -328,8 +342,11 @@ class Service:
 
     # INPUT: None
     # OUTPUT: None
-    # PRECONDITION: Application is running
-    # POSTCONDITION: Application is terminated
+    # PRECONDITION: None
+    # POSTCONDITION:
+    #   -execution; program execution is terminated
+    # RAISES:
+    #   -SystemExit; always raised on call
     @staticmethod
     def exit_app() -> None:
         sys.exit(0)
