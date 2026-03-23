@@ -40,11 +40,11 @@ def function_name(param_name: type) -> type:
 
   Indentation   Labels flush-left one space; entries indented with TAB
 
-  Types         Use Python builtins (int, str, list, dict, None, etc.)
-                or typing module (Any, Optional, List[int], etc.) 
-                Project-defined types (e.g. User, Portfolio) are
-                listed in TYPES section below.
-                All persistent types have id (database primary key).
+  Types         Use Python builtins or typing module. Project-defined
+                types are listed in the TYPES section below. Persistent
+                types carry id (database primary key). Nested collections
+                may be abbreviated in higher layers when element types are
+                defined in a referenced POSTCONDITION.
 
   Constraints   State value constraints, not types
                 ("n > 0" not "must be int")

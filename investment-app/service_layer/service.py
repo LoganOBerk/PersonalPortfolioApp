@@ -250,7 +250,7 @@ class Service:
     #   -stored_user; see Database.pull_user() POSTCONDITION
     #   -stored_portfolios; see Database.pull_portfolios() POSTCONDITION
     #   -stored_stocks; see Database.pull_stocks() POSTCONDITION
-    #RAISES: None
+    # RAISES: None
     def retrieve_stored_data(self, login : str) -> tuple[tuple, list[tuple], list[tuple]]:
         stored_user = self.db.pull_user(login)
         stored_portfolios = self.db.pull_portfolios(stored_user[0])

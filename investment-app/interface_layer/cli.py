@@ -13,7 +13,7 @@ class Cli:
     # OUTPUT: None
     # PRECONDITION: The cli has all the proper depedancies it needs to execute
     # POSTCONDITION: The cli starts execution
-    def execute(self):
+    def execute(self) -> None:
         self.display_startup_menu()
 
 
@@ -21,7 +21,7 @@ class Cli:
     # OUTPUT: None
     # PRECONDITION: see execute method
     # POSTCONDITION: startup menu is displayed
-    def display_startup_menu(self):
+    def display_startup_menu(self) -> None:
         while True:
             selection = 0
             self.user_account = None
@@ -48,7 +48,7 @@ class Cli:
     # OUTPUT: None
     # PRECONDITION: bool is either True or False, see execute method
     # POSTCONDITION: credential gathering menu is properly displayed
-    def display_account_credential_gatherer(self, new : bool):
+    def display_account_credential_gatherer(self, new : bool) -> None:
 
         valid = False
 
@@ -96,7 +96,7 @@ class Cli:
     # OUTPUT: None
     # PRECONDITION: in memory user is properly populated
     # POSTCONDITION: user specific dashboard is displayed
-    def display_user_dashboard(self, user_account):
+    def display_user_dashboard(self, user_account) -> None:
 
         while True:
             selection = 0
@@ -131,7 +131,7 @@ class Cli:
     # OUTPUT: None
     # PRECONDITION: in memory user is properly populated
     # POSTCONDITION: user specific dashboard is displayed
-    def display_funding_menu(self, user_account):
+    def display_funding_menu(self, user_account) -> None:
 
         valid = False
 
@@ -173,7 +173,7 @@ class Cli:
     # OUTPUT: None
     # PRECONDITION: in memory user is properly populated, create is either True or False
     # POSTCONDITION: portfolio modification menu is properly displayed
-    def display_portfolio_modification_menu(self, user_account, create : bool):
+    def display_portfolio_modification_menu(self, user_account, create : bool) -> None:
 
         valid = False
 
@@ -221,7 +221,7 @@ class Cli:
     # OUTPUT: None
     # PRECONDITION: for any user portfolio its in memory model is established
     # POSTCONDITION: portfolio contents are properly displayed
-    def display_portfolio_contents(self, portfolio):
+    def display_portfolio_contents(self, portfolio) -> None:
         while True:
             selection = 0
             packaged_data = self.serv.package_portfolio_data(portfolio)
@@ -255,7 +255,7 @@ class Cli:
     # OUTPUT: None
     # PRECONDITION: for any user portfolio the in memory model is established, purchase is either True or False
     # POSTCONDITION: stock transaction menu is properly displayed
-    def display_stock_transaction_menu(self, portfolio, purchase : bool):
+    def display_stock_transaction_menu(self, portfolio, purchase : bool) -> None:
 
         while True:
             # TODO: Transaction menu display
