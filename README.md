@@ -1,65 +1,53 @@
-================================================================
-         PROGRAM DOCUMENTATION GUIDELINES
-================================================================
+# Program Documentation Guidelines
 
-Fields marked "if N/A - None" must still appear with the literal
-value None so readers know the field was considered.
+Fields marked **"if N/A – None"** must still appear with the literal value `None` so readers know the field was considered.
 
-----------------------------------------------------------------
-  CLASSES
-----------------------------------------------------------------
+---
 
-#PURPOSE:
-#    -<ClassName> provides <X> abstraction
-#    -<why the abstraction exists>
+## Classes
+```python
+# PURPOSE:
+#    - <ClassName> provides <X> abstraction
+#    - <why the abstraction exists>
+```
 
+---
 
-----------------------------------------------------------------
-  FUNCTIONS
-----------------------------------------------------------------
-
+## Functions
+```python
 # INPUT: if N/A - None
-#    -<param_name>(type); <what it represents>
+#    - <param_name>(type); <what it represents>
 # OUTPUT: if N/A - None
-#    -<var_name>(type); <what it represents>
+#    - <var_name>(type); <what it represents>
 # PRECONDITION: if N/A - None
-#    -<param_name or state>; <value constraint>
+#    - <param_name or state>; <value constraint>
 # POSTCONDITION: if N/A - None
-#    -<param or state>; <observable guarantee after return>
+#    - <param or state>; <observable guarantee after return>
 # RAISES: if N/A - None
-#    -<ExceptionType>; <condition that triggers it>
+#    - <ExceptionType>; <condition that triggers it>
 def function_name(param_name: type) -> type:
-	return var_name
-    	
+    return var_name
+```
 
-----------------------------------------------------------------
-  STYLE RULES
-----------------------------------------------------------------
+---
 
-  Semicolons    Separate name/type from description with "; "
+## Style Rules
 
-  Indentation   Labels flush-left one space; entries indented with TAB
+| Rule | Description |
+|---|---|
+| **Semicolons** | Separate name/type from description with `"; "` |
+| **Indentation** | Labels flush-left; entries indented with TAB |
+| **Types** | Use Python builtins or `typing` module. Project-defined types listed in [Types](#types) below. Persistent types carry `id` (database primary key). Nested collections may be abbreviated in higher layers when element types are defined in a referenced `POSTCONDITION`. |
+| **Constraints** | State value constraints, not types — `n > 0` not `"must be int"` |
+| **Guarantees** | Describe observable state, not implementation details |
+| **Be brief** | Short phrase per entry, not full sentences |
 
-  Types         Use Python builtins or typing module. Project-defined
-                types are listed in the TYPES section below. Persistent
-                types carry id (database primary key). Nested collections
-                may be abbreviated in higher layers when element types are
-                defined in a referenced POSTCONDITION.
+---
 
-  Constraints   State value constraints, not types
-                ("n > 0" not "must be int")
+## Types
 
-  Guarantees    Describe observable state, not implementation details
-
-  Be brief      Short phrase per entry, not full sentences
-
-
-----------------------------------------------------------------
-  TYPES
-----------------------------------------------------------------
-
-  User         Represents a user account; holds login, balance and collection of portfolios
-  
-  Portfolio    Represents named collection of stocks
-
-  Stock        Represents a stock holding; ticker and quantity
+| Type | Description |
+|---|---|
+| `User` | Represents a user account; holds login, balance, and a collection of portfolios |
+| `Portfolio` | Represents a named collection of stocks |
+| `Stock` | Represents a stock holding; ticker and quantity |
