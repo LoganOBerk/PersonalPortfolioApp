@@ -1,1 +1,2 @@
-from .api import Api
+from .externalapi import ExternalApi
+from .frontendapi import FrontendApi

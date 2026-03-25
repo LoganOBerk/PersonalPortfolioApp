@@ -2,12 +2,12 @@ import yfinance as yf
 
 
 # PURPOSE: To provide a clean abstraction interface for retrieving live stock data
-class Api:
+class ExternalApi:
 
     # INPUT: string representing a stock ticker
     # OUTPUT: int representing stock price
     # PRECONDITION: stock ticker is a real ticker
-    # POSTCONDITION: None
+    # POSTCONDITION: Non
     @staticmethod
     def get_stock_price(ticker : str) -> int:
         # TODO: Pull stock price data given a ticker

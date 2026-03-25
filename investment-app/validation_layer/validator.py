@@ -1,4 +1,4 @@
-from integration_layer import Api as api
+from integration_layer import ExternalApi as eapi
 
 
 # PURPOSE: 
