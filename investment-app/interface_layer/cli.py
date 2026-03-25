@@ -1,6 +1,8 @@
 from service_layer import ServiceError
 
-# PURPOSE: To provide a basic command line interface that maintains the program control flow and maintain user state
+# PURPOSE: 
+#   -Cli provides a user interaction abstraction
+#   -Handles all user interaction and enforces program control flow
 class Cli:
     def __init__(self, service, validator, visualizer):
         self.user_account = None
@@ -11,16 +13,21 @@ class Cli:
 
     # INPUT: None
     # OUTPUT: None
-    # PRECONDITION: The cli has all the proper depedancies it needs to execute
-    # POSTCONDITION: The cli starts execution
+    # PRECONDITION:
+    #   -Cli; user_account is None, all dependencies are injected and constructed
+    # POSTCONDITION:
+    #   -terminal; initial startup menu is displayed
+    # RAISES: None
     def execute(self) -> None:
         self.display_startup_menu()
 
 
     # INPUT: None
     # OUTPUT: None
-    # PRECONDITION: see execute method
-    # POSTCONDITION: startup menu is displayed
+    # PRECONDITION: None
+    # POSTCONDITION:
+    #   -Cli; user_account is None, user is navigated to selected menu or app is exited
+    # RAISES: None
     def display_startup_menu(self) -> None:
         while True:
             selection = 0

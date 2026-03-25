@@ -1,8 +1,6 @@
 import sys
-
-
-from persistence_layer import DatabaseError
 from collections import defaultdict
+from persistence_layer import DatabaseError
 from domain_models import *
 
 # PURPOSE: 
@@ -340,7 +338,6 @@ class Service:
             s_quantity = stock[2]
 
             portfolio_stocks[s_ticker] = Stock(id=s_id, ticker=s_ticker, quantity=s_quantity)
-
 
     # INPUT: None
     # OUTPUT: None
