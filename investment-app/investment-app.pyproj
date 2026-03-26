@@ -47,6 +47,7 @@
     <Folder Include="integration_layer\__pycache__\" />
     <Folder Include="interface_layer\" />
     <Folder Include="interface_layer\__pycache__\" />
+    <Folder Include="common\" />
     <Folder Include="persistence_layer\" />
     <Folder Include="persistence_layer\__pycache__\" />
     <Folder Include="service_layer\" />
@@ -60,8 +61,11 @@
     <Compile Include="domain_models\stock.py" />
     <Compile Include="domain_models\user.py" />
     <Compile Include="domain_models\__init__.py" />
+    <Compile Include="common\errors.py" />
+    <Compile Include="common\__init__.py" />
     <Compile Include="integration_layer\externalapi.py" />
     <Compile Include="integration_layer\frontendapi.py" />
+    <Compile Include="integration_layer\routes.py" />
     <Compile Include="integration_layer\__init__.py" />
     <Compile Include="interface_layer\cli.py" />
     <Compile Include="interface_layer\visualizer.py" />

@@ -1,14 +1,8 @@
 import sys
 from collections import defaultdict
-from persistence_layer import DatabaseError
+from common.errors import DatabaseError
 from integration_layer import ExternalApi as eapi
-from domain_models import *
-
-# PURPOSE: 
-#   -ServiceError provides a central service error abstraction
-#   -Allows for exceptions to be re-raised as a general errortype for this layer
-class ServiceError(Exception):
-    pass
+from domain_models import User, Portfolio, Stock
 
 
 # PURPOSE:

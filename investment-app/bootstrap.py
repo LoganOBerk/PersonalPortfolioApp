@@ -1,21 +1,25 @@
 from pathlib import Path
+from fastapi import FastAPI
 from persistence_layer import Database
 from service_layer import Service
 from validation_layer import Validator
-from interface_layer import *
+from interface_layer import Cli, Visualizer
+from integration_layer import FrontendApi, router, init
 
 
 # PURPOSE: 
 #   -App provides initialization abstraction
 #   -Allows for clean dependency injection and easy swaps between test mode
 class App:
-    def __init__(self, testing=False):
+    def __init__(self, testing=False, frontend=True):
+        self.frontend = frontend
+        self.app = None
         self.db = None
         self.serv = None
         self.val = None
         self.display = None
         self.vis = None
-        self.init(testing)
+        self.init(testing, frontend)
 
 
     # INPUT: 
@@ -31,7 +35,7 @@ class App:
     #   -val; Validator object constructed with serv injection
     #   -display; Cli object constructed with serv, val, vis injection
     # RAISES: None
-    def init(self, testing : bool) -> None:
+    def init(self, testing : bool, frontend : bool) -> None:
         if testing:
             db_path = ':memory:'
         else:
@@ -40,9 +44,16 @@ class App:
         
         self.db = Database(db_path)
         self.serv = Service(self.db)
-        self.vis = Visualizer()
         self.val = Validator(self.serv)
-        self.display = Cli(self.serv, self.val, self.vis)
+
+        if frontend:
+            self.display = FrontendApi(self.serv, self.val)
+            self.app = FastAPI()
+            init(self.display)
+            self.app.include_router(router)
+        else:
+            self.vis = Visualizer()
+            self.display = Cli(self.serv, self.val, self.vis)
 
 
     # INPUT:
@@ -75,9 +86,13 @@ class App:
     #   -terminal; Cli starts execution on terminal
     #RAISES: None
     def run(self) -> None:
-        self.display.execute()
+        if self.frontend:
+            import uvicorn
+            uvicorn.run(self.app, host="0.0.0.0", port=8000)
+        else:
+            self.display.execute()
 
 
 if __name__ == "__main__" :
-    app = App(testing = True)
-    app.run()
+    investment_app = App(testing = True, frontend = False)
+    investment_app.run()

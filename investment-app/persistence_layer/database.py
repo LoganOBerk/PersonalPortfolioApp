@@ -1,11 +1,7 @@
 import sqlite3 as sqlite
 from sqlite3 import Error as SqliteError
 
-# PURPOSE: 
-#   -DatabaseError provides a central database error abstraction
-#   -Allows for exceptions to be re-raised as a general errortype for this layer
-class DatabaseError(Exception):
-    pass
+
 
 
 # PURPOSE: 

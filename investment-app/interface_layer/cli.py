@@ -1,4 +1,4 @@
-from service_layer import ServiceError
+from common.errors import ServiceError
 
 # PURPOSE: 
 #   -Cli provides a user interaction abstraction
