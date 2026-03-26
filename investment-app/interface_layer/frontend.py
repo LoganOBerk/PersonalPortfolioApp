@@ -11,9 +11,10 @@ class Frontend:
 
         self.api = FrontendApi(service, validator)
         self.app = FastAPI()
-        self.app.add_middleware(CORSMiddleware, allow_origins = origins, allow_methods = ['*'], allow_headers = ['*'])
+        self.app.add_middleware(CORSMiddleware, allow_origins = origins, allow_credentials = True, allow_methods = ['*'], allow_headers = ['*'])
         init(self.api)
         self.app.include_router(router)
+
 
     def execute(self):
         uvicorn.run(self.app, host="0.0.0.0", port=8000)
