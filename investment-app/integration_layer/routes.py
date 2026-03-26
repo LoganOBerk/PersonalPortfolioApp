@@ -179,6 +179,9 @@ def buy(req : TransactionRequest):
 
     portfolio = user.portfolios.get(req.portfolio_name)
 
+    if not portfolio:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
+
     try:
         frontend.execute_buy(user, portfolio, shares_requested)
         return {"portfolio" : PortfolioData.convert(portfolio)}
@@ -198,6 +201,9 @@ def sell(req : TransactionRequest):
         raise HTTPException(status_code=401, detail="Invalid session")
 
     portfolio = user.portfolios.get(req.portfolio_name)
+
+    if not portfolio:
+        raise HTTPException(status_code=404, detail="Portfolio not found")
 
     try:
 
