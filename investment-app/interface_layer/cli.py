@@ -26,7 +26,8 @@ class Cli:
     # OUTPUT: None
     # PRECONDITION: None
     # POSTCONDITION:
-    #   -Cli; user_account is None, user is navigated to selected menu or app is exited
+    #   -self.user_account; is None
+    #   -Cli; user is navigated to selected menu or app is exited
     # RAISES: None
     def display_startup_menu(self) -> None:
         while True:
@@ -51,10 +52,15 @@ class Cli:
             self.display_user_dashboard(self.user_account)
 
 
-    # INPUT: bool identifying if the account is being newly created or not
+    # INPUT: 
+    #   -new(bool); True if creating a new account, False if logging in
     # OUTPUT: None
-    # PRECONDITION: bool is either True or False, see execute method
-    # POSTCONDITION: credential gathering menu is properly displayed
+    # PRECONDITION:
+    #   -new; True or False
+    # POSTCONDITION:
+    #   -self.user_account; if confirmed, see Service.create_account() or Service.find_account() POSTCONDITION, otherwise unchanged
+    #   -Cli; if new return to the startup menu, otherwise display user dashboard
+    # RAISES: None  
     def display_account_credential_gatherer(self, new : bool) -> None:
 
         valid = False
@@ -99,10 +105,14 @@ class Cli:
             return
 
 
-    # INPUT: User 
+    # INPUT:
+    #   -user_account(User); current user account
     # OUTPUT: None
-    # PRECONDITION: in memory user is properly populated
-    # POSTCONDITION: user specific dashboard is displayed
+    # PRECONDITION:
+    #   -user_account; user account is fully populated and up to date
+    # POSTCONDITION:
+    #   -Cli; user is navigated to selected menu, logged out, or app is exited
+    # RAISES: None 
     def display_user_dashboard(self, user_account) -> None:
 
         while True:
@@ -117,7 +127,7 @@ class Cli:
 
             if 0 < selection <= numPortfolios:
                 r = self.display_portfolio_contents(portfolio_list[selection - 1])
-                if r == "back":
+                if r == "logout":
                     return
             elif selection == numPortfolios + 1:
                 self.display_funding_menu(user_account)
@@ -134,10 +144,15 @@ class Cli:
                 pass  # Remove this once you implement
 
     
-    # INPUT: User
+    # INPUT: 
+    #   -user_account(User); current user account
     # OUTPUT: None
-    # PRECONDITION: in memory user is properly populated
-    # POSTCONDITION: user specific dashboard is displayed
+    # PRECONDITION:
+    #   -user_account; user account is fully populated and up to date
+    # POSTCONDITION:
+    #   -user_account; if confirmed see Service.fund_account() POSTCONDITION, otherwise unchanged
+    #   -Cli; return to user dashboard
+    # RAISES: None
     def display_funding_menu(self, user_account) -> None:
 
         valid = False
@@ -176,10 +191,17 @@ class Cli:
 
             return
 
-    # INPUT: User and bool where the bool represents if the user selected to create or remove a portfolio
+    # INPUT:
+    #   -user_account(User); current user account
+    #   -create(bool); True if creating a new portfolio, False if removing one
     # OUTPUT: None
-    # PRECONDITION: in memory user is properly populated, create is either True or False
-    # POSTCONDITION: portfolio modification menu is properly displayed
+    # PRECONDITION:
+    #   -user_account; user account is fully populated and up to date
+    #   -create; True or False
+    # POSTCONDITION:
+    #   -user_account; if confirmed see Service.create_portfolio() or Service.remove_portfolio() POSTCONDITION, otherwise unchanged
+    #   -Cli; return to user dashboard
+    # RAISES: None
     def display_portfolio_modification_menu(self, user_account, create : bool) -> None:
 
         valid = False
@@ -224,11 +246,16 @@ class Cli:
             return
 
 
-    # INPUT: Portfolio
-    # OUTPUT: None
-    # PRECONDITION: for any user portfolio its in memory model is established
-    # POSTCONDITION: portfolio contents are properly displayed
-    def display_portfolio_contents(self, portfolio) -> None:
+    # INPUT: 
+    #   -portfolio(Portfolio); a user portfolio
+    # OUTPUT:
+    #   -return(str | None); "logout" if user wishes to log out, otherwise None
+    # PRECONDITION:
+    #   -portfolio; user portfolio is fully populated and up to date 
+    # POSTCONDITION:
+    #   -Cli; user is navigated to selected menu, logged out or app is exited
+    # RAISES: None
+    def display_portfolio_contents(self, portfolio) -> str | None:
         while True:
             selection = 0
             packaged_data = self.serv.package_portfolio_data(portfolio)
@@ -239,7 +266,7 @@ class Cli:
             # TODO: Display selection options
             # TODO: Selection input receiver
 
-            self.vis.close_chart() #After user makes a selection close the chart
+            self.vis.close_chart()
 
             if selection == 1:
                 self.display_stock_transaction_menu(portfolio, purchase=True)
@@ -248,7 +275,7 @@ class Cli:
             elif selection == 3:
                 return
             elif selection == 4:
-                return "back"
+                return "logout"
             elif selection == 5:
                 self.serv.exit_app()
             else:
@@ -258,10 +285,18 @@ class Cli:
             
 
 
-    # INPUT: Portfolio and bool which indicates if a purchase is occuring or a sale
+    # INPUT:
+    #   -portfolio(Portfolio); a user portfolio
+    #   -purchase(bool); True if purchasing a stock, False if selling
     # OUTPUT: None
-    # PRECONDITION: for any user portfolio the in memory model is established, purchase is either True or False
-    # POSTCONDITION: stock transaction menu is properly displayed
+    # PRECONDITION:
+    #   -portfolio; user portfolio is fully populated and up to date 
+    #   -purchase; True or False
+    #   -self.user_account; user account is fully populated and up to date
+    # POSTCONDITION:
+    #   -portfolio; if confirmed see Service.execute_buy() or Service.execute_sell() POSTCONDITION, otherwise unchanged
+    #   -Cli; return to portfolio menu
+    # RAISES: None 
     def display_stock_transaction_menu(self, portfolio, purchase : bool) -> None:
 
         while True:
