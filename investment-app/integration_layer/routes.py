@@ -16,9 +16,9 @@ def init(api : FrontendApi) -> None:
     global frontend_api
     frontend_api = api
 
+
 def generate_session_id() -> str:
     return secrets.token_hex(32)
-
 
 
 @router.post("/register", status_code = 201)
