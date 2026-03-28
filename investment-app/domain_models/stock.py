@@ -1,4 +1,6 @@
-# PURPOSE: To allow for proper construction of the concept of a stock in memory
+# PURPOSE:
+#   -Stock provides a stock holding abstraction
+#   -encapsulates data related to stock and provides methods of modifying it 
 class Stock:
     def __init__(self, id=None, *, ticker, quantity):
         self.id = id
@@ -6,17 +8,25 @@ class Stock:
         self.quantity = quantity
 
 
-    # INPUT: int representing the amount of stock we are adding
+    # INPUT:
+    #   -inc_amt(int); an amount of stock we want to increase
     # OUTPUT: None
-    # PRECONDITION: amount to increment is positive
-    # POSTCONDITION: Stock is properly updated to represent the proper quantity
+    # PRECONDITION:
+    #   -inc_amt; >= 0
+    # POSTCONDITION:
+    #   -Stock; the current stocks quantity is increased by inc_amt
+    # RAISES: None
     def increment_quantity(self, inc_amt : int) -> None:
         self.quantity += inc_amt
 
 
-    # INPUT: int representing the amount of stock we are decrementing
+    # INPUT: 
+    #   -dec_amt(int); an amount of stock we want to decrease
     # OUTPUT: None
-    # PRECONDITION: amount to decrement is positive and <= quantity
-    # POSTCONDITION: Stock is properly updated to represent the proper quantity
+    # PRECONDITION:
+    #   -dec_amt; quantity >= dec_amt >= 0
+    # POSTCONDITION:
+    #   -Stock; the current stocks quantity is decreased by dec_amt
+    # RAISES: None
     def decrement_quantity(self, dec_amt : int) -> None:
         self.quantity -= dec_amt

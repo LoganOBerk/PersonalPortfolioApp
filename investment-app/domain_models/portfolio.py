@@ -1,6 +1,8 @@
 from .stock import Stock
 
-# PURPOSE: To allow for proper construction of the concept of a portfolio in memory
+# PURPOSE:
+#   -Portfolio provides a portfolio abstraction
+#   -encapsulates data related to a portfolio and provides methods for manipulating or evaluating a portfolio
 class Portfolio:
     def __init__(self, id=None, *, name, stocks: dict[str, Stock] = None):
         self.id = id
@@ -8,18 +10,27 @@ class Portfolio:
         self.stocks = stocks if stocks is not None else {}
 
 
-    # INPUT: string to indicate ticker symbol
-    # OUTPUT: bool representing if the ticker exists in the portfolio
-    # PRECONDITION: ticker string is a valid stock ticker
-    # POSTCONDITION: None
+    # INPUT:
+    #   -ticker(str); a stock ticker symbol
+    # OUTPUT:
+    #   -exists(bool); True or False
+    # PRECONDITION: None
+    # POSTCONDITION:
+    #   -exists; True if ticker held, False if not
+    # RAISES: None
     def has_stock(self, ticker : str) -> bool:
-        return ticker in self.stocks
+        exists = ticker in self.stocks
+        return exists
 
 
-    # INPUT: tuple of requested shares; ticker, quantity
+    # INPUT:
+    #   -shares_requested(tuple[str,int]); a request for a ticker and quantity of stocks
     # OUTPUT: None
-    # PRECONDITION: requested shares are a valid request
-    # POSTCONDITION: portfolio is properly updated based on the purchase amount
+    # PRECONDITION:
+    #   -shares_requested; ticker exists as a real stock ticker, quantity does not exceed market available shares
+    # POSTCONDITION:
+    #   -Portfolio; stocks are either incremented or newly added to the portfolio
+    # RAISES: None
     def buy_shares(self, shares_requested : tuple[str, int]) -> None:
 
         t, q = shares_requested
@@ -31,10 +42,14 @@ class Portfolio:
             self.stocks[t] = Stock(ticker=t, quantity=q)
 
 
-    # INPUT: tuple of requested shares; ticker, quantity
+    # INPUT:
+    #   -shares_requested(tuple[str,int]); a request for a ticker and quantity of stocks
     # OUTPUT: None
-    # PRECONDITION: requested shares are a valid request
-    # POSTCONDITION: portfolio is properly updated based on the sell amount
+    # PRECONDITION:
+    #   -shares_requested; ticker exists in portfolio, quantity does not exceed current holdings
+    # POSTCONDITION:
+    #   -Portfolio; stock quantity is decremented, and if 0 deleted from portfolio
+    # RAISES: None
     def sell_shares(self, shares_requested : tuple[str, int]) -> None:
 
         t, q = shares_requested

@@ -1,6 +1,8 @@
 from .portfolio import Portfolio
 
-# PURPOSE: To allow for proper construction of the concept of a user in memory
+# PURPOSE:
+#   -User provides a user account abstraction
+#   -encapsulates data related to a user account and methods to modify account values
 class User:
     def __init__(self, id=None, *, login, balance, portfolios: dict[str, Portfolio] = None):
         self.id = id
@@ -9,34 +11,50 @@ class User:
         self.portfolios = portfolios if portfolios is not None else {}
 
 
-    # INPUT: string representing portfolio name
+    # INPUT:
+    #   -portfolio_name(str); a name for a portfolio
     # OUTPUT: None
-    # PRECONDITION: portfolio name is not in use and valid
-    # POSTCONDITION: an empty portfolio is added with proper name to user account
+    # PRECONDITION:
+    #   -portfolio_name; portfolio name is not in use by user and is not empty
+    # POSTCONDITION:
+    #   -User; a portfolio is added to the users portfolio collection with the input name
+    # RAISES: None
     def add_portfolio(self, portfolio_name : str) -> None:
         self.portfolios[portfolio_name] = Portfolio(name = portfolio_name)
 
 
-    # INPUT: string representing portfolio name
+    # INPUT:
+    #   -portfolio_name(str); a name of a portfolio
     # OUTPUT: None
-    # PRECONDITION: portfolio name is in use
-    # POSTCONDITION: the portfolio with matching name is removed from the user account
+    # PRECONDITION:
+    #   -portfolio_name; user has a portfolio with this name
+    # POSTCONDITION:
+    #   -User; portfolio with input name is deleted from user collection
+    # RAISES: None
     def remove_portfolio(self, portfolio_name : str) -> None:
         del self.portfolios[portfolio_name]
 
     
-    # INPUT: float representing amount of funds to add to balance
+    # INPUT:
+    #   -funds_to_add(float); an amount of money
     # OUTPUT: None
-    # PRECONDITION: funds to add is positive
-    # POSTCONDITION: funds are properly added to user account balance
+    # PRECONDITION:
+    #   -funds_to_add; >= 0
+    # POSTCONDITION:
+    #   -User; users balance is updated to reflect the added funds
+    # RAISES: None
     def add_funds(self, funds_to_add : float) -> None:
         self.balance += funds_to_add
 
 
-    # INPUT: float representing amount of funds to subtract from balance
+    # INPUT:
+    #   -funds_to_sub(float); an amount of money
     # OUTPUT: None
-    # PRECONDITION: funds to sub is positive and <= balance
-    # POSTCONDITION: funds are properly subtracted from user account balance
+    # PRECONDITION:
+    #   -funds_to_sub; balance >= funds_to_sub >= 0 
+    # POSTCONDITION:
+    #   -User; users balance is updated to reflect the removed funds
+    # RAISES: None
     def sub_funds(self, funds_to_sub : float) -> None:
         self.balance -= funds_to_sub
 
