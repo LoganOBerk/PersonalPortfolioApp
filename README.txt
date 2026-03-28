@@ -9,7 +9,7 @@ value None so readers know the field was considered.
   CLASSES
 ----------------------------------------------------------------
 
-#PURPOSE:
+# PURPOSE:
 #    -<ClassName> provides <X> abstraction
 #    -<why the abstraction exists>
 

@@ -12,21 +12,42 @@ frontend_api : FrontendApi
 
 active_sessions : dict = {}
 
+
+# INPUT:
+# OUTPUT:
+# PRECONDITION:
+# POSTCONDITION:
+# RAISES:
 def init(api : FrontendApi) -> None:
     global frontend_api
     frontend_api = api
 
 
+# INPUT:
+# OUTPUT:
+# PRECONDITION:
+# POSTCONDITION:
+# RAISES:
 def generate_session_id() -> str:
     return secrets.token_hex(32)
 
 
+# INPUT:
+# OUTPUT:
+# PRECONDITION:
+# POSTCONDITION:
+# RAISES:
 def start_session(user) -> str:
     session_id = generate_session_id()
     active_sessions[session_id] = user
     return session_id
 
 
+# INPUT:
+# OUTPUT:
+# PRECONDITION:
+# POSTCONDITION:
+# RAISES:
 @router.post("/register", status_code = 201)
 def register(req : CredsRequest):
 
@@ -46,6 +67,11 @@ def register(req : CredsRequest):
     return {"message" : "account created"}
 
 
+# INPUT:
+# OUTPUT:
+# PRECONDITION:
+# POSTCONDITION:
+# RAISES:
 @router.post("/login", status_code = 200)
 def login(req : CredsRequest):
 
@@ -66,12 +92,22 @@ def login(req : CredsRequest):
     return {"session_id" : session_id, "user" : UserData.convert(user)}
 
 
+# INPUT:
+# OUTPUT:
+# PRECONDITION:
+# POSTCONDITION:
+# RAISES:
 @router.post("/logout")
 def logout(req : LogoutRequest):
     active_sessions.pop(req.session_id, None)
     return {"message" : "logged out"}
 
 
+# INPUT:
+# OUTPUT:
+# PRECONDITION:
+# POSTCONDITION:
+# RAISES:
 @router.post("/fund")
 def fund(req : FundsRequest):
     user = active_sessions.get(req.session_id)
@@ -93,6 +129,11 @@ def fund(req : FundsRequest):
     return {"user" : UserData.convert(user)}
     
 
+# INPUT:
+# OUTPUT:
+# PRECONDITION:
+# POSTCONDITION:
+# RAISES:
 @router.post("/portfolio/create", status_code=201)
 def create_portfolio(req : PortfolioRequest):
     user = active_sessions.get(req.session_id)
@@ -114,6 +155,11 @@ def create_portfolio(req : PortfolioRequest):
     return {"user" : UserData.convert(user)}
 
 
+# INPUT:
+# OUTPUT:
+# PRECONDITION:
+# POSTCONDITION:
+# RAISES:
 @router.post("/portfolio/remove")
 def remove_portfolio(req : PortfolioRequest):
     user = active_sessions.get(req.session_id)
@@ -135,6 +181,11 @@ def remove_portfolio(req : PortfolioRequest):
     return {"user" : UserData.convert(user)}
 
 
+# INPUT:
+# OUTPUT:
+# PRECONDITION:
+# POSTCONDITION:
+# RAISES:
 @router.post("/buy")
 def buy(req : TransactionRequest):
     user = active_sessions.get(req.session_id)
@@ -162,6 +213,11 @@ def buy(req : TransactionRequest):
     return {"portfolio" : PortfolioData.convert(portfolio)}
 
 
+# INPUT:
+# OUTPUT:
+# PRECONDITION:
+# POSTCONDITION:
+# RAISES:
 @router.post("/sell")
 def sell(req : TransactionRequest):
     user = active_sessions.get(req.session_id)
@@ -189,6 +245,11 @@ def sell(req : TransactionRequest):
     return {"portfolio" : PortfolioData.convert(portfolio)}
 
 
+# INPUT:
+# OUTPUT:
+# PRECONDITION:
+# POSTCONDITION:
+# RAISES:
 @router.get("/user")
 def get_user(session_id : str):
     user = active_sessions.get(session_id)

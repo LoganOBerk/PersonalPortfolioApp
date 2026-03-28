@@ -1,11 +1,17 @@
 from common.errors import ValidationError
 
+# PURPOSE:
 class FrontendApi:
     def __init__(self, service, validator):
         self.serv = service
         self.validator = validator
     
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    # RAISES:
     def create_account(self, credentials):
         valid = self.validator.account_validator(credentials, new=True)
 
@@ -15,6 +21,11 @@ class FrontendApi:
         return self.serv.create_account(credentials)
 
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    # RAISES:
     def find_account(self, credentials):
         valid = self.validator.account_validator(credentials, new=False)
 
@@ -26,6 +37,11 @@ class FrontendApi:
         return self.serv.find_account(login)
 
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    # RAISES:
     def fund_account(self, user_account, funds_request):
         valid = self.validator.fund_validator(user_account.balance, funds_request)
 
@@ -35,6 +51,11 @@ class FrontendApi:
         return self.serv.fund_account(user_account, funds_request)
 
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    # RAISES:
     def create_portfolio(self, user_account, portfolio_name):
         valid = self.validator.portfolio_validator(user_account, portfolio_name, create = True)
 
@@ -44,6 +65,11 @@ class FrontendApi:
         return self.serv.create_portfolio(user_account, portfolio_name)
 
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    # RAISES:
     def remove_portfolio(self, user_account, portfolio_name):
         valid = self.validator.portfolio_validator(user_account, portfolio_name, create = False)
 
@@ -53,6 +79,11 @@ class FrontendApi:
         return self.serv.remove_portfolio(user_account, portfolio_name)
 
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    # RAISES:
     def execute_buy(self, user_account, portfolio, shares_requested):
         ticker = shares_requested[0]
         purchase = True
@@ -72,6 +103,11 @@ class FrontendApi:
         return self.serv.execute_buy(user_account, portfolio, shares_requested)
 
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    # RAISES:
     def execute_sell(self, user_account, portfolio, shares_requested):
         ticker = shares_requested[0]
         purchase = False
