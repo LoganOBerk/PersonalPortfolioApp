@@ -1,4 +1,5 @@
 import secrets
+from tkinter import ACTIVE
 
 from fastapi import APIRouter, HTTPException
 
@@ -29,7 +30,12 @@ def init(api : FrontendApi) -> None:
 # POSTCONDITION:
 # RAISES:
 def generate_session_id() -> str:
-    return secrets.token_hex(32)
+    session_id = secrets.token_hex(32)
+
+    while session_id in active_sessions:
+        session_id = secrets.token_hex(32)
+
+    return session_id
 
 
 # INPUT:
