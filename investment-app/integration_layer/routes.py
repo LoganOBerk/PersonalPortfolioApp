@@ -14,20 +14,25 @@ active_sessions : dict = {}
 
 
 # INPUT:
-# OUTPUT:
+#   -api(FrontendApi); functional interface
+# OUTPUT: None
 # PRECONDITION:
+#   -api; is populated with a service and validator
 # POSTCONDITION:
-# RAISES:
+#   -frontend_api; passed api is assigned to global module memory
+# RAISES: None
 def connect(api : FrontendApi) -> None:
     global frontend_api
     frontend_api = api
 
 
-# INPUT:
+# INPUT: None
 # OUTPUT:
-# PRECONDITION:
+#   -session_id(str); a random string
+# PRECONDITION: None
 # POSTCONDITION:
-# RAISES:
+#   -session_id; a random string is generated, is unique from any id in active sessions
+# RAISES: None
 def generate_session_id() -> str:
     session_id = secrets.token_hex(32)
 
@@ -38,10 +43,14 @@ def generate_session_id() -> str:
 
 
 # INPUT:
+#   -user(User); a user account
 # OUTPUT:
+#   -session_id(str); a random string
 # PRECONDITION:
+#   -user; is fully populated
 # POSTCONDITION:
-# RAISES:
+#   -active_sessions; a generated session id is keyed to the user establishing their session
+# RAISES: None
 def start_session(user) -> str:
     session_id = generate_session_id()
     active_sessions[session_id] = user
