@@ -156,7 +156,7 @@ def logout(req : LogoutRequest) -> dict[str,str]:
 # POSTCONDITION:
 # RAISES:
 @router.post("/fund")
-def fund(req : FundsRequest):
+def fund(req : FundsRequest) -> dict[str, UserData]:
     user = active_sessions.get(req.session_id)
 
     if not user:
@@ -172,8 +172,9 @@ def fund(req : FundsRequest):
     except ServiceError as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+    response = {"user" : UserData.convert(user)}
 
-    return {"user" : UserData.convert(user)}
+    return response
     
 
 # INPUT:
@@ -182,7 +183,7 @@ def fund(req : FundsRequest):
 # POSTCONDITION:
 # RAISES:
 @router.post("/portfolio/create", status_code=201)
-def create_portfolio(req : PortfolioRequest):
+def create_portfolio(req : PortfolioRequest) -> dict[str, UserData]:
     user = active_sessions.get(req.session_id)
 
     if not user:
@@ -198,8 +199,9 @@ def create_portfolio(req : PortfolioRequest):
     except ServiceError as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+    response = {"user" : UserData.convert(user)}
 
-    return {"user" : UserData.convert(user)}
+    return response
 
 
 # INPUT:
@@ -208,7 +210,7 @@ def create_portfolio(req : PortfolioRequest):
 # POSTCONDITION:
 # RAISES:
 @router.post("/portfolio/remove")
-def remove_portfolio(req : PortfolioRequest):
+def remove_portfolio(req : PortfolioRequest) -> dict[str, UserData]:
     user = active_sessions.get(req.session_id)
 
     if not user:
@@ -224,8 +226,9 @@ def remove_portfolio(req : PortfolioRequest):
     except ServiceError as e:
         raise HTTPException(status_code=404, detail=str(e))
 
+    response = {"user" : UserData.convert(user)}    
 
-    return {"user" : UserData.convert(user)}
+    return response 
 
 
 # INPUT:
@@ -234,7 +237,7 @@ def remove_portfolio(req : PortfolioRequest):
 # POSTCONDITION:
 # RAISES:
 @router.post("/buy")
-def buy(req : TransactionRequest):
+def buy(req : TransactionRequest) -> dict[str, PortfolioData]:
     user = active_sessions.get(req.session_id)
     shares_requested = (req.ticker, req.quantity)
 
@@ -256,8 +259,9 @@ def buy(req : TransactionRequest):
     except ServiceError as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+    response = {"portfolio" : PortfolioData.convert(portfolio)}
 
-    return {"portfolio" : PortfolioData.convert(portfolio)}
+    return response
 
 
 # INPUT:
@@ -266,7 +270,7 @@ def buy(req : TransactionRequest):
 # POSTCONDITION:
 # RAISES:
 @router.post("/sell")
-def sell(req : TransactionRequest):
+def sell(req : TransactionRequest) -> dict[str, PortfolioData]:
     user = active_sessions.get(req.session_id)
     shares_requested = (req.ticker, req.quantity)
 
@@ -288,8 +292,9 @@ def sell(req : TransactionRequest):
     except ServiceError as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+    response = {"portfolio" : PortfolioData.convert(portfolio)}
 
-    return {"portfolio" : PortfolioData.convert(portfolio)}
+    return response 
 
 
 # INPUT:
@@ -298,10 +303,12 @@ def sell(req : TransactionRequest):
 # POSTCONDITION:
 # RAISES:
 @router.get("/user")
-def get_user(session_id : str):
+def get_user(session_id : str) -> dict[str, UserData]:
     user = active_sessions.get(session_id)
 
     if not user:
         raise HTTPException(status_code=401, detail="Invalid session")
 
-    return {"user": UserData.convert(user)}
+    response = {"user": UserData.convert(user)}
+
+    return response
