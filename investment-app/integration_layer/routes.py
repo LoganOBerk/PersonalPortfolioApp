@@ -28,10 +28,10 @@ def connect(api : FrontendApi) -> None:
 
 # INPUT: None
 # OUTPUT:
-#   -session_id(str); a random string
+#   -session_id(str); randomly generated hex string
 # PRECONDITION: None
 # POSTCONDITION:
-#   -session_id; a random string is generated, is unique from any id in active sessions
+#   -session_id; unique among all keys in active sessions
 # RAISES: None
 def generate_session_id() -> str:
     session_id = secrets.token_hex(32)
@@ -45,11 +45,11 @@ def generate_session_id() -> str:
 # INPUT:
 #   -user(User); a user account
 # OUTPUT:
-#   -session_id(str); a random string
+#   -session_id(str); randomly generated hex string
 # PRECONDITION:
 #   -user; is fully populated
 # POSTCONDITION:
-#   -active_sessions; a generated session id is keyed to the user establishing their session
+#   -active_sessions; new entry maps session id to user
 # RAISES: None
 def start_session(user) -> str:
     session_id = generate_session_id()
@@ -58,12 +58,20 @@ def start_session(user) -> str:
 
 
 # INPUT:
+#   -req(CredsRequest); HTTP credential payload
 # OUTPUT:
+#   -response(dict[str,str]); success confirmation sent to client
 # PRECONDITION:
+#   -router; exists as a valid router
+#   -frontend_api; contains control flow pipeline methods
 # POSTCONDITION:
+#   -frontend_api; see FrontendApi.create_account() POSTCONDITION
+#   -response; contains key "message" with value "account created"
 # RAISES:
+#   -HTTPException(400); a ValidationError is raised, malformed credentials
+#   -HTTPException(500); a ServiceError is raised, server side error
 @router.post("/register", status_code = 201)
-def register(req : CredsRequest):
+def register(req : CredsRequest) -> dict[str,str]:
 
     creds = (req.login, req.password)
 
@@ -77,17 +85,27 @@ def register(req : CredsRequest):
     except ServiceError as e:
         raise HTTPException(status_code = 500, detail = str(e))
 
+    response = {"message" : "account created"}
 
-    return {"message" : "account created"}
+    return response
 
 
 # INPUT:
+#   -req(CredsRequest); HTTP credential payload
 # OUTPUT:
+#   -response(dict[str,int|UserData]); session id and user data sent to client
 # PRECONDITION:
+#   -router; exists as a valid router
+#   -frontend_api; contains control flow pipeline methods
 # POSTCONDITION:
+#   -frontend_api; see FrontendApi.find_account() POSTCONDITION
+#   -active_sessions; see start_session() POSTCONDITION
+#   -response; session id for user and user data is sent to client  
 # RAISES:
+#   -HTTPException(400); a ValidationError is raised, malformed credentials
+#   -HTTPException(404); a ServiceError is raised, account not found
 @router.post("/login", status_code = 200)
-def login(req : CredsRequest):
+def login(req : CredsRequest) -> dict[str, int | UserData]:
 
     creds = (req.login, req.password)
 
@@ -103,18 +121,33 @@ def login(req : CredsRequest):
 
 
     session_id = start_session(user)
-    return {"session_id" : session_id, "user" : UserData.convert(user)}
+    
+    response = {"session_id" : session_id, "user" : UserData.convert(user)}
+
+    return response
 
 
 # INPUT:
+#   -req(LogoutRequest): HTTP logout payload
 # OUTPUT:
+#   -response(dict[str,str]); success confirmation sent to client
 # PRECONDITION:
+#   -router; exists as a valid router
+#   -active_sessions; contains all active sessions
 # POSTCONDITION:
+#   -active_sessions; matching session id from payload is removed
 # RAISES:
+#   -HTTPException(404); session id is not found in active sessions
 @router.post("/logout")
-def logout(req : LogoutRequest):
-    active_sessions.pop(req.session_id, None)
-    return {"message" : "logged out"}
+def logout(req : LogoutRequest) -> dict[str,str]:
+    user = active_sessions.pop(req.session_id, None)
+
+    if user is None:
+        raise HTTPException(status_code = 404, detail = "session not found")
+
+    response = {"message" : "logged out"}
+
+    return response
 
 
 # INPUT:
