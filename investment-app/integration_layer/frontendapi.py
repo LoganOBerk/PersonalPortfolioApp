@@ -1,4 +1,5 @@
 from common.errors import ValidationError
+from .routes import connect
 
 # PURPOSE:
 class FrontendApi:
@@ -7,6 +8,13 @@ class FrontendApi:
         self.validator = validator
     
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    # RAISES:
+    def link_routes(self):
+        return connect(self)
     # INPUT:
     # OUTPUT:
     # PRECONDITION:

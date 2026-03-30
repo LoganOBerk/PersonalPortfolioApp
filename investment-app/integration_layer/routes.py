@@ -18,7 +18,7 @@ active_sessions : dict = {}
 # PRECONDITION:
 # POSTCONDITION:
 # RAISES:
-def init(api : FrontendApi) -> None:
+def connect(api : FrontendApi) -> None:
     global frontend_api
     frontend_api = api
 
