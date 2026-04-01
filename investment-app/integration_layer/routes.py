@@ -76,7 +76,7 @@ def register(req : CredsRequest) -> dict[str,str]:
     creds = (req.login, req.password)
 
     try:
-
+    
         frontend_api.create_account(creds)
         
     except ValidationError as e:
@@ -164,7 +164,8 @@ def fund(req : FundsRequest) -> dict[str, UserData]:
 
     try:
 
-        frontend_api.fund_account(user, req.funds_requested)
+        with user.lock:
+            frontend_api.fund_account(user, req.funds_requested)
        
     except ValidationError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -190,8 +191,9 @@ def create_portfolio(req : PortfolioRequest) -> dict[str, UserData]:
         raise HTTPException(status_code=401, detail="Invalid session")
 
     try:
-
-        frontend_api.create_portfolio(user, req.name)
+        
+        with user.lock:
+            frontend_api.create_portfolio(user, req.name)
         
     except ValidationError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -218,7 +220,8 @@ def remove_portfolio(req : PortfolioRequest) -> dict[str, UserData]:
 
     try:
 
-        frontend_api.remove_portfolio(user, req.name)
+        with user.lock:
+            frontend_api.remove_portfolio(user, req.name)
         
     except ValidationError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -251,7 +254,8 @@ def buy(req : TransactionRequest) -> dict[str, PortfolioData]:
 
     try:
 
-        frontend_api.execute_buy(user, portfolio, shares_requested)
+        with user.lock:
+            frontend_api.execute_buy(user, portfolio, shares_requested)
         
     except ValidationError as e:
         raise HTTPException(status_code=400, detail=str(e))
@@ -284,7 +288,8 @@ def sell(req : TransactionRequest) -> dict[str, PortfolioData]:
 
     try:
 
-        frontend_api.execute_sell(user, portfolio, shares_requested)
+        with user.lock:
+            frontend_api.execute_sell(user, portfolio, shares_requested)
         
     except ValidationError as e:
         raise HTTPException(status_code=400, detail=str(e))
