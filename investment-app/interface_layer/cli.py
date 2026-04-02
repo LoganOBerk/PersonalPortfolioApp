@@ -79,8 +79,8 @@ class Cli:
             print('---------------LOGIN/SIGNUP---------------\n')
             
             # TODO: Credential input receiver (login & password)
-            login = input('Enter your login:\n')
-            password = input('Enter your password:\n')
+            login = input('Enter your login:')
+            password = input('Enter your password:')
 
             creds = login, password
 
@@ -141,23 +141,28 @@ class Cli:
         while True:
             selection = 0
             numPortfolios = len(user_account.portfolios)
+            portfolio_list = list(user_account.portfolios.values())
 
             # TODO: User dashboard display
             print("-------------------DASHBOARD---------------------\n")
-            print('Profile\n')
-            print('List of portfolios:\n')
+            
+            # Greets the user and displays the balance
+            print("Hello,", user_account.username)
+            print("Current Balance: $", user_account.balance, "\n")
 
+            # Portfolio list
+            for i in range(numPortfolios):
+                print(i + 1, ".", portfolio_list[i].name)
+                
             # TODO: Display selection options
-            print(f"{numPortfolios+1}. Fund Account")
-            print(f"{numPortfolios+2}. Create Portfolio")
-            print(f"{numPortfolios+3}. Remove Portfolio")
-            print(f"{numPortfolios+4}. Logout")
-            print(f"{numPortfolios+5}. Exit")
+            print(numPortfolios + 1, ". Add Funds")
+            print(numPortfolios + 2, ". Create Portfolio")
+            print(numPortfolios + 3, ". Remove Portfolio")
+            print(numPortfolios + 4, ". Logout")
+            print(numPortfolios + 5, ". Exit")
             
             # TODO: Selection input receiver
             selection = int(input("Select option: "))
-
-            portfolio_list = list(user_account.portfolios.values())
 
             if 0 < selection <= numPortfolios:
                 r = self.display_portfolio_contents(portfolio_list[selection - 1])
@@ -252,11 +257,11 @@ class Cli:
 
         while True:
             # TODO: Portfolio creation display
-            print("\n-------------- Portfolio Menu ------------------")
+            print("\n-------------- Portfolio Modification Menu ------------------")
                         
             # TODO: Portfolio name input receiver
 
-            name_request = name_request
+            name_request = input("Enter portfolio name: ")
 
             valid = self.validator.portfolio_validator(user_account, name_request, create)
 
@@ -271,8 +276,8 @@ class Cli:
             selection = 0
 
             # TODO: Display selection options
-            print("1. Create portfolio\n")
-            print("2. Remove portfolio\n")
+            print("1. Submit\n")
+            print("2. Cancel\n")
 
             # TODO: Selection input receiver
             selection = int(input)
@@ -369,8 +374,8 @@ class Cli:
             print("\n------------- Stock Transaction ---------------")
             
             # TODO: shares_requested input receiver (ticker & quantity)
-            ticker = input("Ticker: ")
-            quantity = int(input("Quantity: "))
+            ticker = input("Enter stock ticker (e.g., AAPL): ")
+            quantity = int(input("Enter number of shares to buy/sell: "))
             
             shares_requested = ticker, quantity
 
@@ -400,8 +405,8 @@ class Cli:
 
             # TODO: Display selection options
             print("What would you like to do?\n")
-            print("1. Buy\n")
-            print("2. Sell\n")
+            print("1. Submit\n")
+            print("2. Cancel\n")
 
             # TODO: Selection input receiver
             selection = input("Enter the selection number")
