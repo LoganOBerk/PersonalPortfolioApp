@@ -1,3 +1,5 @@
+import re
+
 from integration_layer import ExternalApi as eapi
 
 
@@ -22,9 +24,21 @@ class Validator:
     def account_validator(self, credentials : tuple[str, str], new : bool) -> bool:
         # TODO: Validate account credentials using service method
         # TODO: Add any other validation you want, if you want to enforce certain additional constraints
-        pass
+        valid = False
+        login, password = credentials
+        
+        if login == '' or password == '':
+            return valid
+        
+        valid = self.serv.credentials_match(credentials)
 
-     
+        if new:
+            # password should be more than 6 chars in length
+            valid =  (not valid) and len(password) >= 6
+        
+        return valid
+
+
     # INPUT:
     #   -user_account(User); current user account 
     #   -portfolio_name(str); requested name of portfolio
@@ -42,7 +56,13 @@ class Validator:
         # TODO: Validate that portfolio_name doesnt already exist
         # TODO: Add any other validation you want, AKA empty name insert
         # TODO: ensure creation only is allowed when portfolio doesnt exist and removal is only allowed when it does
-        pass
+
+        valid = portfolio_name in user_account.portfolios
+
+        if create:
+            valid = (portfolio_name == '')
+
+        return valid
 
 
     # INPUT:
@@ -64,7 +84,20 @@ class Validator:
         # TODO: if stock is not being purchased check if it exists in the portfolio
         # TODO: if stock is being purchased find out if it exists in yfinance
         # TODO: if ticker doesnt exist in portfolio and we arent purchasing return false
-        pass
+        valid = False
+        ticker = ticker.strip()
+        
+        # checking if format is valid
+        valid = re.fullmatch(r"[A-Z]{1,5}", ticker)
+
+        if purchase and valid:
+           valid = eapi.does_ticker_exist(ticker)
+           
+        else:
+            # if NOT purchasing ensure that ticker exists in portfolio
+            valid = ticker in portfolio.stocks
+            
+        return valid
 
 
     # INPUT:
@@ -84,7 +117,23 @@ class Validator:
     def stock_quantity_validator(portfolio, shares_requested : tuple[str, int], purchase : bool) -> bool:
         # TODO: If we are not purchasing check if portfolio has enough shares of stock
         # TODO: (optional) if we are purchasing ensure the purchase amount is not more than number of avalible shares in open market
-        pass
+        
+        ticker, quantity = shares_requested
+
+        # quantity must be positive
+        valid = (quantity > 0)
+
+        if purchase and valid:
+            # a way to do this is by having a get_volume() sort of a function in the ExternalApi file
+            volume = eapi.get_volume(ticker)
+            valid = (volume < quantity)
+            
+        elif valid:
+            # if selling ensure enough shares exist
+            valid = portfolio.stocks[ticker].quantity >= quantity
+        
+        return valid
+
 
 
     # INPUT:
@@ -105,7 +154,23 @@ class Validator:
         # TODO: get price of stock from api
         # TODO: Validate that the user has sufficient balance for the requested stock and amount
         # TODO: if user is selling we return true by default
-        pass
+        
+        ticker, quantity = shares_requested
+
+        # to get stock price from api
+        if purchase: 
+            price = eapi.get_price(ticker)
+
+            # to ensure user has sufficient balance
+            total_cost = price * quantity
+            
+            valid = (balance >= total_cost)
+            
+        else:
+            valid = True
+            
+        return valid
+
 
 
     # INPUT:
@@ -119,6 +184,10 @@ class Validator:
     #   -valid; True if funds_request > 0 and meets all constraints, False otherwise
     # RAISES: None
     @staticmethod
-    def fund_validator(balance : float, funds_request : float) -> bool:
+    def fund_validator(funds_request : float) -> bool:
         # TODO: validate that the funds are positive and reasonable within discrecion
-        pass
+    
+        # ensures funds requested are in valid range zero - one-million
+        valid = (1_000_000 > funds_request > 0)
+
+        return valid

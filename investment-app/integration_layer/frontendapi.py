@@ -63,7 +63,7 @@ class FrontendApi:
     # POSTCONDITION:
     # RAISES:
     def fund_account(self, user_account, funds_request):
-        valid = self.validator.fund_validator(user_account.balance, funds_request)
+        valid = self.validator.fund_validator(funds_request)
 
         if not valid:
             raise ValidationError("")
