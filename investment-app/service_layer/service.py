@@ -219,14 +219,14 @@ class Service:
     # PRECONDITION:
     # POSTCONDITION:
     # RAISES:
-    def resolve_credentials(self, login : str) -> tuple[str, str] | None:
+    def resolve_password(self, login : str) -> str | None:
         user_dat = self.identify_user(login)
         if user_dat is None:
-            user_creds = None
+            user_password = None
         else:
-            user_creds = user_dat[1], user_dat[2]
+            user_password = user_dat[2]
 
-        return user_creds
+        return user_password
 
     # INPUT:
     # OUTPUT:

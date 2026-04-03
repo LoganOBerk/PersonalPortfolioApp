@@ -31,19 +31,15 @@ class Validator:
         if login == '' or password == '':
             return valid
         
-        stored_creds = self.serv.resolve_credentials(login)
-        
-        if stored_creds is not None:
-            stored_login, stored_password = stored_creds
+        stored_password = self.serv.resolve_password(login)
+        account_exists = stored_password is not None
 
-            login_match = login == stored_login
-            password_match = password == stored_password
- 
-            valid = login_match and password_match
+        if account_exists:
+            valid = password == stored_password
 
-        if new:
+        if new and not account_exists:
             # password should be more than 6 chars in length
-            valid = not valid and len(password) >= 6
+            valid = len(password) >= 6
         
         return valid
 
@@ -66,12 +62,12 @@ class Validator:
         # TODO: Add any other validation you want, AKA empty name insert
         # TODO: ensure creation only is allowed when portfolio doesnt exist and removal is only allowed when it does
 
-        exist = portfolio_name in user_account.portfolios
+        in_account = portfolio_name in user_account.portfolios
 
         if create:
-            valid = portfolio_name == '' and not exist
+            valid = portfolio_name != '' and not in_account
         else:
-            valid = exist
+            valid = in_account
 
         return valid
 
