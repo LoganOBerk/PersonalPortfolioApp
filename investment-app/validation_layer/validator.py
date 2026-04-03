@@ -91,7 +91,6 @@ class Validator:
         # TODO: if stock is not being purchased check if it exists in the portfolio
         # TODO: if stock is being purchased find out if it exists in yfinance
         # TODO: if ticker doesnt exist in portfolio and we arent purchasing return false
-        valid = False
         ticker = ticker.strip()
         
         # checking if format is valid

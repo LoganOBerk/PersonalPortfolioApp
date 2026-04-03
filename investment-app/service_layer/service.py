@@ -214,19 +214,21 @@ class Service:
 
         return user_dat
 
+
     # INPUT:
     # OUTPUT:
     # PRECONDITION:
     # POSTCONDITION:
     # RAISES:
     def resolve_password(self, login : str) -> str | None:
+        user_password = None
         user_dat = self.identify_user(login)
-        if user_dat is None:
-            user_password = None
-        else:
-            user_password = user_dat[2]
 
+        if user_dat is not None:
+            user_password = user_dat[2]
+           
         return user_password
+
 
     # INPUT:
     # OUTPUT:
@@ -234,13 +236,14 @@ class Service:
     # POSTCONDITION:
     # RAISES:    
     def resolve_uid(self, login : str) -> int | None:
+        u_id = None
         user_dat = self.identify_user(login)
-        if user_dat is None:
-            u_id = None
-        else:
-            u_id = user_dat[0]
 
+        if user_dat is not None:
+            u_id = user_dat[0]
+            
         return u_id
+
 
     # INPUT:
     #   -portfolio(Portfolio); a user portfolio
