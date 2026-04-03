@@ -197,37 +197,22 @@ class Service:
     # INPUT:
     #   -credentials(tuple[str,str]); user login and password
     # OUTPUT:
-    #   -match(bool); do credentials match
-    # PRECONDITION:
-    #   -credentials; login and password are non empty
+    #   -user_dat(tuple); user identifying information
+    # PRECONDITION: None
     # POSTCONDITION:
-    #   -match; True if credentials exist in db, False otherwise
+    #   -user_dat; user information provided if login exists in db, None otherwise
     # RAISES:
     #   -ServiceError; database call fails
-    def credentials_match(self, credentials : tuple[str, str]) -> bool:
-        match = self.resolve_uid(credentials) is not None
-        return match 
-
-
-    # INPUT:
-    #   -credentials(tuple[str,str]); user login and password
-    # OUTPUT:
-    #   -u_id(int); user identifying number
-    # PRECONDITION:
-    #   -credentials; login and password are non empty
-    # POSTCONDITION:
-    #   -u_id; user id provided if credentials exist in db, None otherwise
-    # RAISES:
-    #   -ServiceError; database call fails
-    def resolve_uid(self, credentials : tuple[str, str]) -> int:
+    def identify_user(self, login : str) -> int:
         try:
 
-            u_id = self.db.resolve_credentials(credentials)
+            user_dat = self.db.pull_user(login)
 
         except DatabaseError as e:
             raise ServiceError("Failed to match credentials") from e
 
-        return u_id
+
+        return user_dat
 
 
     # INPUT:
@@ -269,6 +254,25 @@ class Service:
 
 
     # INPUT:
+    #   -user_account(User); current user account
+    #   -login(str); user login
+    # OUTPUT: None
+    # PRECONDITION:
+    #   -login; a user with this login exists in the database
+    # POSTCONDITION:
+    #   -user_account; is populated with id, login, balance, all portfolios along with their stocks from database
+    # RAISES: None
+    def populate_user_account(self, user_account : User, login : str) -> None:
+        stored_user, stored_portfolios, stored_stocks = self.retrieve_stored_data(login)
+
+        user_account.id = stored_user[0]
+        user_account.login = stored_user[1]
+        user_account.balance = stored_user[3]
+
+        self.populate_user_portfolios(user_account.portfolios, stored_portfolios, stored_stocks)
+        
+
+    # INPUT:
     #   -stored_stocks(list[tuple]); all user stocks listed as portfolio id, stock id, ticker, quantity
     # OUTPUT:
     #   -portfolio_assignments(dict[int, list[tuple]]); list of stock data keyed to specific portfolio id
@@ -285,23 +289,6 @@ class Service:
 
         return portfolio_assignments
 
-
-    # INPUT:
-    #   -user_account(User); current user account
-    #   -login(str); user login
-    # OUTPUT: None
-    # PRECONDITION:
-    #   -login; a user with this login exists in the database
-    # POSTCONDITION:
-    #   -user_account; is populated with id, login, balance, all portfolios along with their stocks from database
-    # RAISES: None
-    def populate_user_account(self, user_account : User, login : str) -> None:
-        stored_user, stored_portfolios, stored_stocks = self.retrieve_stored_data(login)
-
-        user_account.id, user_account.login, user_account.balance = stored_user
-
-        self.populate_user_portfolios(user_account.portfolios, stored_portfolios, stored_stocks)
-        
 
     # INPUT:
     #   -user_portfolios(dict[str,Portfolio]); user portfolios keyed by portfolio name

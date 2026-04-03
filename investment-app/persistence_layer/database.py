@@ -72,11 +72,10 @@ class Database:
     # INPUT:
     #   -login(str); user login 
     # OUTPUT:
-    #   -user_data(tuple[int,str,float]); user data from database id, login, balance
-    # PRECONDITION:
-    #   -login; exists in database
+    #   -user_data(tuple[int,str,float]); user data from database id, login, password, balance or None
+    # PRECONDITION: None
     # POSTCONDITION:
-    #   -user_data; database information related to user with respective login is retrieved
+    #   -user_data; database information related to user with respective login is retrieved, None otherwise
     # RAISES:
     #   -DatabaseError; SqliteError occurs during selection 
     def pull_user(self, login : str) -> tuple[int, str, float]:
@@ -84,7 +83,7 @@ class Database:
         cursor = self.conn.cursor()
 
         pull_user = '''
-            SELECT id, login, balance
+            SELECT id, login, password, balance
             FROM users
             WHERE login = ?
         '''
@@ -387,35 +386,4 @@ class Database:
             raise DatabaseError(f"update_funds failed: {e}") from e
 
 
-    # INPUT:
-    #   -credentials(tuple[str,str]); user login and password
-    # OUTPUT:
-    #   -u_id(int | None); user id or None
-    # PRECONDITION:
-    #   -credentials; see Validator.account_validator() POSTCONDITION
-    # POSTCONDITION:
-    #   -u_id; matched user id if credentials exist in database, None otherwise
-    # RAISES:
-    #   -DatabaseError; SqliteError occurs during selection
-    def resolve_credentials(self, credentials : tuple[str, str]) -> int | None:
-        cursor = self.conn.cursor()
-
-        resolve_id = '''
-            SELECT id
-            FROM users
-            WHERE login = ? AND password = ?
-        '''
-
-        try:
-
-            cursor.execute(resolve_id, credentials)
-
-        except SqliteError as e:
-            self.conn.rollback()
-            raise DatabaseError(f"resolve_credentials failed: {e}") from e
-
-        user_info = cursor.fetchone()
-
-        u_id = user_info[0] if user_info else None
-        
-        return u_id
+    

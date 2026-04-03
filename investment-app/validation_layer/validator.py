@@ -1,3 +1,4 @@
+from ast import Store
 import re
 
 from integration_layer import ExternalApi as eapi, PortfolioData, PortfolioRequest
@@ -30,7 +31,16 @@ class Validator:
         if login == '' or password == '':
             return valid
         
-        valid = self.serv.credentials_match(credentials)
+        stored_user = self.serv.identify_user(login)
+        
+        if stored_user is not None:
+            stored_login = stored_user[1]
+            stored_password = stored_user[2]
+
+            login_match = login == stored_login
+            password_match = password == stored_password
+ 
+            valid = login_match and password_match
 
         if new:
             # password should be more than 6 chars in length
@@ -57,10 +67,12 @@ class Validator:
         # TODO: Add any other validation you want, AKA empty name insert
         # TODO: ensure creation only is allowed when portfolio doesnt exist and removal is only allowed when it does
 
-        valid = portfolio_name in user_account.portfolios
+        exist = portfolio_name in user_account.portfolios
 
         if create:
-            valid = (portfolio_name == '')
+            valid = portfolio_name == '' and not exist
+        else:
+            valid = exist
 
         return valid
 
@@ -128,7 +140,7 @@ class Validator:
         if purchase and valid:
             # validating that a user is not purchasing more in open market
             max_stocks = eapi.get_float(ticker)
-            valid = max_stocks <= quantity
+            valid = max_stocks >= quantity
             
         elif valid:
             # if selling ensure enough shares exist

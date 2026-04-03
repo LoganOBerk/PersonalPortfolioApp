@@ -123,7 +123,7 @@ def login(req : CredsRequest) -> dict[str, str | UserData]:
     creds = (req.login, req.password)
 
     try:
-        u_id = frontend_api.resolve_uid(creds)
+        u_id = frontend_api.resolve_uid(req.login)
 
         if u_id in active_sessions.values():
             user = active_users[u_id]
