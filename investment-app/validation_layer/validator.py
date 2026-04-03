@@ -1,4 +1,3 @@
-from ast import Store
 import re
 
 from integration_layer import ExternalApi as eapi, PortfolioData, PortfolioRequest
@@ -18,9 +17,10 @@ class Validator:
     # OUTPUT:
     #   -valid(bool); account validation result True or False
     # PRECONDITION:
-    #   -new; is not None
+    #   -credentials; login and password are non-empty strings
+    #   -new; is True or False
     # POSTCONDITION:
-    #   -valid; True if credentials meet all constraints, False otherwise
+    #   -valid; True if credentials match stored record, or password >= 6 chars (new)
     # RAISES: None
     def account_validator(self, credentials : tuple[str, str], new : bool) -> bool:
         # TODO: Validate account credentials using service method
@@ -51,10 +51,10 @@ class Validator:
     # OUTPUT:
     #   -valid(bool); portfolio validation result True or False
     # PRECONDITION:
-    #   -user_account; user account is fully populated and up to date
-    #   -create; is not None
+    #   -user_account.portfolios; accessible and current
+    #   -create; is True or False
     # POSTCONDITION:
-    #   -valid; True if portfolio name exists or is available and meets all constraints, False otherwise
+    #   -valid; True if name is non-empty and not taken (create), or exists in account
     # RAISES: None
     @staticmethod
     def portfolio_validator(user_account, portfolio_name : str, create : bool) -> bool:
@@ -79,10 +79,10 @@ class Validator:
     # OUTPUT:
     #   -valid(bool); stock ticker validation result True or False
     # PRECONDITION:
-    #   -portfolio; user portfolio is fully populated and up to date
-    #   -purchase; is not None
+    #   -portfolio.stocks; accessible and current
+    #   -purchase; is True or False
     # POSTCONDITION:
-    #   -valid; True if ticker meets all constraints for given purchase state, False otherwise 
+    #   -valid; True if format matches [A-Z]{1,5} and exists in yfinance (purchase), or exists in portfolio (sell)
     # RAISES: None
     @staticmethod
     def stock_ticker_validator(portfolio, ticker : str, purchase : bool) -> bool:
@@ -113,11 +113,11 @@ class Validator:
     # OUTPUT:
     #   -valid(bool); stock quantity validation result True or False
     # PRECONDITION:
-    #   -shares_requested; ticker of requested shares is valid, see Validator.stock_ticker_validator() POSTCONDITION
-    #   -portfolio; user portfolio is fully populated and up to date
-    #   -purchase; is not None
+    #   -shares_requested; ticker is valid, see stock_ticker_validator() POSTCONDITION
+    #   -quantity; > 0
+    #   -purchase; is True or False
     # POSTCONDITION:
-    #   -valid; True if quantity meets all constraints for given purchase state, False otherwise
+    #   -valid; True if quantity > 0 and does not exceed float shares (purchase), or current holdings (sell)
     # RAISES: None
     @staticmethod
     def stock_quantity_validator(portfolio, shares_requested : tuple[str, int], purchase : bool) -> bool:
@@ -143,7 +143,6 @@ class Validator:
         return valid
 
 
-
     # INPUT:
     #   -balance(float); users current balance
     #   -shares_requested(tuple[str,int]); ticker and quantity of shares requested
@@ -151,11 +150,11 @@ class Validator:
     # OUTPUT:
     #   -valid(bool); user balance validator result True or False
     # PRECONDITION:
-    #   -balance; user balance >= 0
-    #   -shares_requested; requested shares are valid, see Validator.stock_ticker_validator() & Validator.stock_quantity_validator() POSTCONDITIONS
-    #   -purchase; is not None
+    #   -balance; >= 0
+    #   -shares_requested; ticker and quantity are valid, see stock_ticker_validator() & stock_quantity_validator() POSTCONDITIONS
+    #   -purchase; is True or False
     # POSTCONDITION:
-    #   -valid; True if user has sufficient balance, False otherwise
+    #   -valid; True if balance >= price * quantity (purchase), or True unconditionally (sell)
     # RAISES: None
     @staticmethod
     def sufficient_balance_validator(balance : float, shares_requested : tuple[str, int], purchase : bool) -> bool:
@@ -171,7 +170,6 @@ class Validator:
 
             # to ensure user has sufficient balance
             total_cost = price * quantity
-            
             valid = (balance >= total_cost)
             
         else:
@@ -180,16 +178,14 @@ class Validator:
         return valid
 
 
-
     # INPUT:
-    #   -balance(float); users current balance
     #   -funds_request(float); requested funds to add
     # OUTPUT:
     #   -valid(bool); requested funds validator result True or False
     # PRECONDITION:
-    #   -balance; user balance >= 0
+    #   -funds_request; is a float
     # POSTCONDITION:
-    #   -valid; True if funds_request > 0 and meets all constraints, False otherwise
+    #   -valid; True if 0 < funds_request < 1,000,000
     # RAISES: None
     @staticmethod
     def fund_validator(funds_request : float) -> bool:

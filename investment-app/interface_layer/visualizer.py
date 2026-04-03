@@ -15,25 +15,23 @@ class Visualizer:
     # PRECONDITION:
     #   -portfolio_data; non-empty, each dict contains 'ticker'(str) and 'quantity'(int)
     # POSTCONDITION:
-    #   -process; a pie chart is displayed with stock data distributions does not block program execution
+    #   -self.fig; pie chart rendered with ticker labels and quantity distribution
+    #   -execution; chart display does not block program
     # RAISES: None
     def display_pie_chart(self, portfolio_data : list[dict[str, str | int]]) -> None:
-
 
         # TODO: use pandas to format the data
         # TODO: use matplotlib to display the data
 
-        
-        plt.show(block=False) #Displays chart doesnt block program
+        plt.show(block=False)
 
     
     # INPUT: None
     # OUTPUT: None
     # PRECONDITION:
-    #   -process; current process has a chart displayed
+    #   -self.fig; an active chart exists
     # POSTCONDITION:
-    #   -process; chart is closed
+    #   -self.fig; chart is closed and removed from display
     # RAISES: None
     def close_chart(self) -> None:
         plt.close(self.fig)
-            

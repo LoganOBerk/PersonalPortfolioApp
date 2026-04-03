@@ -18,14 +18,14 @@ class Service:
     #   -credentials(tuple[str,str]); user login and password
     # OUTPUT: None
     # PRECONDITION:
-    #   -credentials; see Validator.account_validator() POSTCONDITION
+    #   -credentials; login and password are non-empty strings, see Validator.account_validator() POSTCONDITION
     # POSTCONDITION: 
-    #   -db; see Database.insert_user() POSTCONDITION
+    #   -database; see Database.insert_user() POSTCONDITION
     # RAISES: 
     #   -ServiceError; database call fails
     def create_account(self, credentials : tuple[str, str]) -> None:
         try:
-        # TODO: Add user to the db
+        # TODO: Add user to the database
             pass
         except DatabaseError as e:
             raise ServiceError("Failed to create account") from e
@@ -34,7 +34,7 @@ class Service:
     # INPUT:
     #   -login(str); user login
     # OUTPUT:
-    #   -user(User); represents current user
+    #   -user(User); populated account for the given login
     # PRECONDITION:
     #   -login; a user with this login exists in the database
     # POSTCONDITION: 
@@ -56,15 +56,15 @@ class Service:
     # OUTPUT: None
     # PRECONDITION:
     #   -user_account; account info is up to date
-    #   -funds_request; funds requested are > 0
+    #   -funds_request; > 0
     # POSTCONDITION: 
-    #   -db; see Database.update_funds() POSTCONDITION
+    #   -database; see Database.update_funds() POSTCONDITION
     #   -user_account; funds are added to account
     # RAISES:
     #   -ServiceError; database call fails
     def fund_account(self, user_account : User, funds_request : float) -> None:
         try:
-        #TODO: update db funds
+        #TODO: update database funds
             pass
         except DatabaseError as e:
             raise ServiceError("Failed to update funds") from e
@@ -80,15 +80,13 @@ class Service:
     #   -user_account; account info is up to date
     #   -portfolio_name; see Validator.portfolio_validator() POSTCONDITION
     # POSTCONDITION: 
-    #   -db; see Database.insert_portfolio() POSTCONDITION
+    #   -database; see Database.insert_portfolio() POSTCONDITION
     #   -user_account; empty portfolio with portfolio_name is added to account
     # RAISES:
     #   -ServiceError; database call fails
     def create_portfolio(self, user_account : User, portfolio_name : str) -> None:
         try:
-
             p_id = self.db.insert_portfolio(user_account.id, portfolio_name)
-
         except DatabaseError as e:
             raise ServiceError("Failed to create portfolio") from e
 
@@ -104,13 +102,13 @@ class Service:
     #   -user_account; account info is up to date
     #   -portfolio_name; see Validator.portfolio_validator() POSTCONDITION
     # POSTCONDITION:
-    #   -db; see Database.delete_portfolio() POSTCONDITION
+    #   -database; see Database.delete_portfolio() POSTCONDITION
     #   -user_account; portfolio is removed from in memory account
     # RAISES:
     #   -ServiceError; database call fails
     def remove_portfolio(self, user_account : User, portfolio_name : str) -> None:
         try:
-        #TODO: call remove function for removing portfolio from db
+        #TODO: call remove function for removing portfolio from database
             pass
         except DatabaseError as e:
             raise ServiceError("Failed to remove portfolio") from e
@@ -124,11 +122,11 @@ class Service:
     #   -shares_requested(tuple[str,int]); requested stock ticker and quantity
     # OUTPUT: None
     # PRECONDITION:
-    #   -user_account; account info is up to date in memory, and see Validator.sufficient_balance_validator() POSTCONDITION
+    #   -user_account; account info is up to date, see Validator.sufficient_balance_validator() POSTCONDITION
     #   -portfolio; portfolio is up to date
     #   -shares_requested; see Validator.stock_ticker_validator() & Validator.stock_quantity_validator() POSTCONDITIONS
     # POSTCONDITION:
-    #   -db; if portfolio already has the requested share see Database.update_stock(), else see Database.insert_stock() POSTCONDITION
+    #   -database; if ticker exists in portfolio see Database.update_stock(), else see Database.insert_stock() POSTCONDITION
     #   -user_account; balance is decremented based on purchase cost
     #   -portfolio; stock with matching ticker is added with quantity or updated
     # RAISES:
@@ -142,13 +140,11 @@ class Service:
         s_id = None
 
         try:
-
             if portfolio.has_stock(ticker):
-                # TODO: update the db
+                # TODO: update the database
                 pass
             else:
                  s_id = self.db.insert_stock(portfolio.id, shares_requested)
-        
         except DatabaseError as e:
             raise ServiceError("Failed to execute buy") from e
 
@@ -164,11 +160,11 @@ class Service:
     #   -shares_requested(tuple[str,int]); requested stock ticker and quantity
     # OUTPUT: None
     # PRECONDITION:
-    #   -user_account; account info is up to date in memory
+    #   -user_account; account info is up to date
     #   -portfolio; portfolio is up to date
     #   -shares_requested; see Validator.stock_ticker_validator() & Validator.stock_quantity_validator() POSTCONDITIONS
     # POSTCONDITION:
-    #   -db; if portfolio already has the requested share see Database.update_stock(), else see Database.delete_stock() POSTCONDITION
+    #   -database; if quantity equals current holdings see Database.delete_stock(), else see Database.update_stock() POSTCONDITION
     #   -user_account; balance is incremented by sale value
     #   -portfolio; stock with matching ticker is updated or removed
     # RAISES:
@@ -180,14 +176,12 @@ class Service:
         ticker, quantity = shares_requested
 
         try:
-
             if portfolio.has_stock(ticker) and quantity == portfolio.stocks[ticker].quantity:
-                # TODO: remove from the db
+                # TODO: remove from the database
                 pass
             else:
-                # TODO: update the db
+                # TODO: update the database
                 pass
-
         except DatabaseError as e:
             raise ServiceError("Failed to execute sell") from e
 
@@ -195,31 +189,32 @@ class Service:
 
 
     # INPUT:
-    #   -credentials(tuple[str,str]); user login and password
+    #   -login(str); user login
     # OUTPUT:
-    #   -user_dat(tuple); user identifying information
+    #   -user_dat(tuple); user id, login, password, balance
     # PRECONDITION: None
     # POSTCONDITION:
-    #   -user_dat; user information provided if login exists in db, None otherwise
+    #   -user_dat; user information provided if login exists in database, None otherwise
     # RAISES:
     #   -ServiceError; database call fails
     def identify_user(self, login : str) -> int:
         try:
-
             user_dat = self.db.pull_user(login)
-
         except DatabaseError as e:
             raise ServiceError("Failed to match credentials") from e
-
 
         return user_dat
 
 
     # INPUT:
+    #   -login(str); user login
     # OUTPUT:
-    # PRECONDITION:
+    #   -user_password(str | None); stored password for given login
+    # PRECONDITION: None
     # POSTCONDITION:
+    #   -user_password; user password provided if login exists in database, None otherwise
     # RAISES:
+    #   -ServiceError; propagated from identify_user()
     def resolve_password(self, login : str) -> str | None:
         user_password = None
         user_dat = self.identify_user(login)
@@ -231,10 +226,14 @@ class Service:
 
 
     # INPUT:
+    #   -login(str); user login
     # OUTPUT:
-    # PRECONDITION:
+    #   -u_id(int | None); stored user id for given login
+    # PRECONDITION: None
     # POSTCONDITION:
-    # RAISES:    
+    #   -u_id; user id provided if login exists in database, None otherwise
+    # RAISES:
+    #   -ServiceError; propagated from identify_user()
     def resolve_uid(self, login : str) -> int | None:
         u_id = None
         user_dat = self.identify_user(login)
@@ -288,9 +287,10 @@ class Service:
     #   -login(str); user login
     # OUTPUT: None
     # PRECONDITION:
+    #   -user_account; is empty
     #   -login; a user with this login exists in the database
     # POSTCONDITION:
-    #   -user_account; is populated with id, login, balance, all portfolios along with their stocks from database
+    #   -user_account; populated with id, login, balance, all portfolios and their stocks from database
     # RAISES: None
     def populate_user_account(self, user_account : User, login : str) -> None:
         stored_user, stored_portfolios, stored_stocks = self.retrieve_stored_data(login)
@@ -309,7 +309,7 @@ class Service:
     # PRECONDITION:
     #   -stored_stocks; see Database.pull_stocks() POSTCONDITION
     # POSTCONDITION:
-    #   -portfolio_assignments; every portfolio id is uniquely keyed to its stock list
+    #   -portfolio_assignments; each portfolio id maps to its list of stock tuples
     # RAISES: None
     def assign_portfolio_allocations(self, stored_stocks : list[tuple]) -> dict[int, list[tuple]]:
         portfolio_assignments = defaultdict(list)
@@ -330,7 +330,7 @@ class Service:
     #   -stored_portfolios; see Database.pull_portfolios() POSTCONDITION
     #   -stored_stocks; see Database.pull_stocks() POSTCONDITION
     # POSTCONDITION:
-    #   -user_portfolios; users portfolios are populated along with their respective stocks
+    #   -user_portfolios; populated with all portfolios and their respective stocks
     # RAISES: None
     def populate_user_portfolios(self, user_portfolios : dict[str, Portfolio], stored_portfolios : list[tuple], stored_stocks : list[tuple]) -> None:
         stored_stocks = self.assign_portfolio_allocations(stored_stocks)
@@ -350,10 +350,10 @@ class Service:
     #   -stored_portfolio_stocks(list[tuple]); specific portfolios stock list
     # OUTPUT: None
     # PRECONDITION:
-    #   -portfolio_stocks; current portfolio has no stocks
+    #   -portfolio_stocks; is empty
     #   -stored_portfolio_stocks; contains all stocks for given portfolio
     # POSTCONDITION:
-    #   -portfolio_stocks; current user portfolio is populated with all of its stocks
+    #   -portfolio_stocks; populated with all stocks for the given portfolio
     # RAISES: None
     def populate_portfolio_stocks(self, portfolio_stocks : dict[str, Stock], stored_portfolio_stocks : list[tuple]) -> None:
 
@@ -365,10 +365,11 @@ class Service:
 
             portfolio_stocks[s_ticker] = Stock(id=s_id, ticker=s_ticker, quantity=s_quantity)
 
+
     # INPUT: None
     # OUTPUT: None
     # PRECONDITION: None
-    # POSTCONDITION:
+    # POSTCONDITION: None
     #   -execution; program execution is terminated
     # RAISES:
     #   -SystemExit; always raised on call

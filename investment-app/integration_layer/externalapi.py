@@ -9,14 +9,14 @@ class ExternalApi:
     # INPUT:
     #   -ticker(str); a stock ticker symbol
     # OUTPUT:
-    #   -price(int); a live stock price
+    #   -price(float); live stock price
     # PRECONDITION:
-    #   -ticker; ticker symbol is a real ticker in open market
+    #   -ticker; exists in open market
     # POSTCONDITION:
-    #   -price; corresponding live ticker price has been fetched from yfinance
+    #   -price; current market price for ticker
     # RAISES: None
     @staticmethod
-    def get_stock_price(ticker : str) -> int:
+    def get_stock_price(ticker : str) -> float:
         # TODO: Pull stock price data given a ticker
         pass
 
@@ -24,11 +24,11 @@ class ExternalApi:
     # INPUT:
     #   -ticker(str); a stock ticker symbol 
     # OUTPUT:
-    #   -exist(bool); True or False
+    #   -exist(bool); whether ticker exists in the open market
     # PRECONDITION:
-    #   -ticker; matches basic format with <= 5 capital chars
+    #   -ticker; matches format [A-Z]{1,5}
     # POSTCONDITION:
-    #   -exist; ticker is identified as being a real(True) or fake(False)
+    #   -exist; True if ticker exists in open market, False otherwise
     # RAISES: None
     @staticmethod
     def does_ticker_exist(ticker : str) -> bool:
@@ -39,11 +39,11 @@ class ExternalApi:
     # INPUT:
     #   -ticker(str); a stock ticker symbol 
     # OUTPUT:
-    #   -max_shares(int); the maximum amount of open market shares
+    #   -max_shares(float); total shares available in open market
     # PRECONDITION:
-    #   -ticker; is an existant ticker in open market
+    #   -ticker; exists in open market
     # POSTCONDITION:
-    #   -max_shares; the maximum open market shares is sourced and returned
+    #   -max_shares; total float shares available in open market for ticker
     # RAISES: None
     @staticmethod
     def get_float(ticker : str) -> int:

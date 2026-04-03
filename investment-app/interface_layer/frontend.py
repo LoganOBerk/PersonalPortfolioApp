@@ -23,10 +23,9 @@ class Frontend:
     # INPUT: None
     # OUTPUT: None
     # PRECONDITION:
-    #   -FrontendApi; is initialized with proper dependencies
-    #   -self.app; FastApi instance is created, CORS exceptions are included for browser compatibility, and routes are established
+    #   -self.app; FastAPI instance configured with CORS middleware and routes
     # POSTCONDITION:
-    #   -Frontend; frontend was served on port 8000 on local network for duration of server running
+    #   -self.app; served on 0.0.0.0:8000 until server is stopped
     # RAISES: None
     def execute(self) -> None:
         uvicorn.run(self.app, host="0.0.0.0", port=8000)

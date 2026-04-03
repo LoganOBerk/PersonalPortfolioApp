@@ -14,7 +14,7 @@ class Cli:
     # INPUT: None
     # OUTPUT: None
     # PRECONDITION:
-    #   -Cli; user_account is None, all dependencies are injected and constructed
+    #   -self.user_account; is None
     # POSTCONDITION:
     #   -terminal; initial startup menu is displayed
     # RAISES: None
@@ -26,8 +26,7 @@ class Cli:
     # OUTPUT: None
     # PRECONDITION: None
     # POSTCONDITION:
-    #   -self.user_account; is None
-    #   -Cli; user is navigated to selected menu or app is exited
+    #   -Cli; navigates to credential gatherer (new/login), user dashboard (login success), or exits
     # RAISES: None
     def display_startup_menu(self) -> None:
         while True:
@@ -44,7 +43,6 @@ class Cli:
 
             # TODO: Selection input receiver
             selection = int(input("Select option: "))
-            
 
             if selection == 1:
                 self.display_account_credential_gatherer(new=True)
@@ -68,17 +66,15 @@ class Cli:
     #   -new; True or False
     # POSTCONDITION:
     #   -self.user_account; if confirmed, see Service.create_account() or Service.find_account() POSTCONDITION, otherwise unchanged
-    #   -Cli; if new return to the startup menu, otherwise display user dashboard
+    #   -Cli; returns to caller on confirm or cancel
     # RAISES: None  
     def display_account_credential_gatherer(self, new : bool) -> None:
 
         valid = False
 
         while True:
-            # TODO: Login/Signup menu display
             print('---------------LOGIN/SIGNUP---------------\n')
             
-            # TODO: Credential input receiver (login & password)
             login = input('Enter your login:')
             password = input('Enter your password:')
 
@@ -122,7 +118,6 @@ class Cli:
             elif selection != 2:
                 # TODO: invalid selection error msg
                 print("Invalid selection.\n")
-                
                 continue
 
             return
@@ -132,9 +127,9 @@ class Cli:
     #   -user_account(User); current user account
     # OUTPUT: None
     # PRECONDITION:
-    #   -user_account; user account is fully populated and up to date
+    #   -user_account; fully populated and up to date
     # POSTCONDITION:
-    #   -Cli; user is navigated to selected menu, logged out, or app is exited
+    #   -Cli; navigates to portfolio contents, funding menu, portfolio modification menu, returns on logout, or exits
     # RAISES: None 
     def display_user_dashboard(self, user_account) -> None:
 
@@ -187,10 +182,10 @@ class Cli:
     #   -user_account(User); current user account
     # OUTPUT: None
     # PRECONDITION:
-    #   -user_account; user account is fully populated and up to date
+    #   -user_account; fully populated and up to date
     # POSTCONDITION:
     #   -user_account; if confirmed see Service.fund_account() POSTCONDITION, otherwise unchanged
-    #   -Cli; return to user dashboard
+    #   -Cli; returns to user dashboard
     # RAISES: None
     def display_funding_menu(self, user_account) -> None:
 
@@ -240,16 +235,17 @@ class Cli:
 
             return
 
+
     # INPUT:
     #   -user_account(User); current user account
     #   -create(bool); True if creating a new portfolio, False if removing one
     # OUTPUT: None
     # PRECONDITION:
-    #   -user_account; user account is fully populated and up to date
+    #   -user_account; fully populated and up to date
     #   -create; True or False
     # POSTCONDITION:
     #   -user_account; if confirmed see Service.create_portfolio() or Service.remove_portfolio() POSTCONDITION, otherwise unchanged
-    #   -Cli; return to user dashboard
+    #   -Cli; returns to user dashboard
     # RAISES: None
     def display_portfolio_modification_menu(self, user_account, create : bool) -> None:
 
@@ -258,7 +254,7 @@ class Cli:
         while True:
             # TODO: Portfolio creation display
             print("\n-------------- Portfolio Modification Menu ------------------")
-                        
+
             # TODO: Portfolio name input receiver
 
             name_request = input("Enter portfolio name: ")
@@ -301,7 +297,6 @@ class Cli:
             elif selection != 2:
                 # TODO: invalid selection error msg
                 print("Invalid selection/n")
-                
                 continue
 
             return
@@ -310,11 +305,11 @@ class Cli:
     # INPUT: 
     #   -portfolio(Portfolio); a user portfolio
     # OUTPUT:
-    #   -return(str | None); "logout" if user wishes to log out, otherwise None
+    #   -return(str | None); "logout" if user selects logout, None otherwise
     # PRECONDITION:
-    #   -portfolio; user portfolio is fully populated and up to date 
+    #   -portfolio; fully populated and up to date
     # POSTCONDITION:
-    #   -Cli; user is navigated to selected menu, logged out or app is exited
+    #   -Cli; navigates to stock transaction menu (buy/sell), returns on back, returns "logout" on logout, or exits
     # RAISES: None
     def display_portfolio_contents(self, portfolio) -> str | None:
         while True:
@@ -328,11 +323,11 @@ class Cli:
             
             # TODO: Display selection options
             print("Select an option:\n")
-            print("1. Stocks bought\n")
-            print("2. Stocks sold\n")
-            print("Enter\n")
-            print("Go back\n")
-            print("Exit\n")
+            print("1. Buy Stock\n")
+            print("2. Sell Stock\n")
+            print("3. Go Back\n")
+            print("4. Logout\n")
+            print("5. Exit\n")
 
             # TODO: Selection input receiver
             selection = int(input("Enter your selection option: "))
@@ -353,19 +348,18 @@ class Cli:
                 # TODO: invalid selection error msg
                 print("Invalid Selection/n")
            
-            
 
     # INPUT:
     #   -portfolio(Portfolio); a user portfolio
     #   -purchase(bool); True if purchasing a stock, False if selling
     # OUTPUT: None
     # PRECONDITION:
-    #   -portfolio; user portfolio is fully populated and up to date 
+    #   -portfolio; fully populated and up to date
     #   -purchase; True or False
-    #   -self.user_account; user account is fully populated and up to date
+    #   -self.user_account; fully populated and up to date
     # POSTCONDITION:
     #   -portfolio; if confirmed see Service.execute_buy() or Service.execute_sell() POSTCONDITION, otherwise unchanged
-    #   -Cli; return to portfolio menu
+    #   -Cli; returns to portfolio menu
     # RAISES: None 
     def display_stock_transaction_menu(self, portfolio, purchase : bool) -> None:
 
