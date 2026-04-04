@@ -3,6 +3,8 @@ from common.errors import ValidationError
 
 
 # PURPOSE:
+#   -FrontendApi provides a user operation abstraction
+#   -This abstraction is provided to enforce function contracts on POST or GET request
 class FrontendApi:
     def __init__(self, service, validator):
         self.serv = service
