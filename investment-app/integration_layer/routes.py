@@ -171,10 +171,18 @@ def logout(req : LogoutRequest) -> dict[str,str]:
 
 
 # INPUT:
+#   -req(FundsRequest); HTTP funds to add payload
 # OUTPUT:
+#   -response(dict[str,UserData]); user data JSON payload
 # PRECONDITION:
+#   -router; exists as a valid router
+#   -frontend_api; contains control flow pipeline methods
 # POSTCONDITION:
+#   response; user data JSON payload is delivered back to sender
 # RAISES:
+#   -HTTPException(400); a ValidationError is raised, invalid funds request
+#   -HTTPException(401); unauthorized, user session does not exist
+#   -HTTPException(500); a ServiceError is raised, server side error
 @router.post("/fund")
 def fund(req : FundsRequest) -> dict[str, UserData]:
     user = find_sessions_user(req.session_id)
@@ -199,10 +207,18 @@ def fund(req : FundsRequest) -> dict[str, UserData]:
     
 
 # INPUT:
+#   req(PortfolioRequest); HTTP portfolio creation payload
 # OUTPUT:
+#   response(dict[str,UserData]); user data JSON payload 
 # PRECONDITION:
+#   -router; exists as a valid router
+#   -frontend_api; contains control flow pipeline methods 
 # POSTCONDITION:
+#   -response; user data JSON payload is delivered back to sender
 # RAISES:
+#   -HTTPException(400); a ValidationError is raised, invalid portfolio name
+#   -HTTPException(401); unauthorized, user session does not exist
+#   -HTTPException(500); a ServiceError is raised, server side error
 @router.post("/portfolio/create", status_code=201)
 def create_portfolio(req : PortfolioRequest) -> dict[str, UserData]:
     user = find_sessions_user(req.session_id)
@@ -227,10 +243,18 @@ def create_portfolio(req : PortfolioRequest) -> dict[str, UserData]:
 
 
 # INPUT:
+#   req(PortfolioRequest); HTTP portfolio removal payload
 # OUTPUT:
+#   response(dict[str,UserData]); user data JSON payload 
 # PRECONDITION:
+#   -router; exists as a valid router
+#   -frontend_api; contains control flow pipeline methods 
 # POSTCONDITION:
+#   -response; user data JSON payload is delivered back to sender
 # RAISES:
+#   -HTTPException(400); a ValidationError is raised, invalid portfolio name
+#   -HTTPException(401); unauthorized, user session does not exist
+#   -HTTPException(404); a ServiceError is raised, removal failed
 @router.post("/portfolio/remove")
 def remove_portfolio(req : PortfolioRequest) -> dict[str, UserData]:
     user = find_sessions_user(req.session_id)
@@ -255,10 +279,19 @@ def remove_portfolio(req : PortfolioRequest) -> dict[str, UserData]:
 
 
 # INPUT:
+#   req(PortfolioRequest); HTTP transaction payload
 # OUTPUT:
+#   response(dict[str,PortfolioData]); portfolio data JSON payload 
 # PRECONDITION:
+#   -router; exists as a valid router
+#   -frontend_api; contains control flow pipeline methods 
 # POSTCONDITION:
+#   -response; portfolio data JSON payload is delivered back to sender
 # RAISES:
+#   -HTTPException(400); a ValidationError is raised, invalid portfolio name
+#   -HTTPException(401); unauthorized, user session does not exist
+#   -HTTPException(404); portfolio is not found
+#   -HTTPException(500); a ServiceError is raised, server side error
 @router.post("/buy")
 def buy(req : TransactionRequest) -> dict[str, PortfolioData]:
     user = find_sessions_user(req.session_id)
@@ -290,10 +323,19 @@ def buy(req : TransactionRequest) -> dict[str, PortfolioData]:
 
 
 # INPUT:
+#   req(PortfolioRequest); HTTP transaction payload
 # OUTPUT:
+#   response(dict[str,PortfolioData]); portfolio data JSON payload 
 # PRECONDITION:
+#   -router; exists as a valid router
+#   -frontend_api; contains control flow pipeline methods 
 # POSTCONDITION:
+#   -response; portfolio data JSON payload is delivered back to sender
 # RAISES:
+#   -HTTPException(400); a ValidationError is raised, invalid portfolio name
+#   -HTTPException(401); unauthorized, user session does not exist
+#   -HTTPException(404); portfolio is not found
+#   -HTTPException(500); a ServiceError is raised, server side error
 @router.post("/sell")
 def sell(req : TransactionRequest) -> dict[str, PortfolioData]:
     user = find_sessions_user(req.session_id)
@@ -325,10 +367,16 @@ def sell(req : TransactionRequest) -> dict[str, PortfolioData]:
 
 
 # INPUT:
+#   -session_id(str); a session id
 # OUTPUT:
+#   -response(dict[str,UserData]); user data JSON payload 
 # PRECONDITION:
+#   -router; exists as a valid router
+#   -frontend_api; contains control flow pipeline methods 
 # POSTCONDITION:
+#   -response; user data JSON payload is delivered back to sender
 # RAISES:
+#   -HTTPException(401); unauthorized, user session does not exist
 @router.get("/user")
 def get_user(session_id : str) -> dict[str, UserData]:
     user = find_sessions_user(session_id)

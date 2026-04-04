@@ -29,7 +29,7 @@ value None so readers know the field was considered.
   #    -<ExceptionType>; <condition that triggers it>
   def function_name(param_name: type) -> type:
       return var_name
-
+  
   ----------------------------------------------------------------
   STYLE RULES
   ----------------------------------------------------------------

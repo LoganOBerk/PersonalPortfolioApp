@@ -9,140 +9,120 @@ class FrontendApi:
         self.validator = validator
     
 
-    # INPUT:
-    # OUTPUT:
-    # PRECONDITION:
-    # POSTCONDITION:
-    # RAISES:
+    # INPUT/OUTPUT/PRECONDITION/POSTCONDITION/RAISES: see respective .routes connect fields 
     def link_routes(self):
         connect(self)
 
 
-    # INPUT:
-    # OUTPUT:
-    # PRECONDITION:
-    # POSTCONDITION:
-    # RAISES:
+    # INPUT/OUTPUT/PRECONDITION/POSTCONDITION/RAISES: see respective Service.resolve_uid() fields
     def resolve_uid(self, login):
         u_id = self.serv.resolve_uid(login)
         return u_id 
 
 
-    # INPUT:
-    # OUTPUT:
-    # PRECONDITION:
-    # POSTCONDITION:
+    # INPUT/OUTPUT/PRECONDITION/POSTCONDITION: see respective Service.create_account() fields
     # RAISES:
+    #   -ValidationError; where invalid, see Validator.account_validator() POSTCONDITION
     def create_account(self, credentials):
         valid = self.validator.account_validator(credentials, new=True)
 
         if not valid:
-            raise ValidationError("")
+            raise ValidationError("Account could not be created")
 
         return self.serv.create_account(credentials)
 
 
     # INPUT:
-    # OUTPUT:
-    # PRECONDITION:
-    # POSTCONDITION:
+    #   -credentials(tuple[str,str]); user login and password
+    # OUTPUT/PRECONDITION/POSTCONDITION: see respective Service.find_account() fields
     # RAISES:
+    #   -ValidationError; where invalid, see Validator.account_validator() POSTCONDITION
     def find_account(self, credentials):
         valid = self.validator.account_validator(credentials, new=False)
 
         if not valid:
-            raise ValidationError("")
+            raise ValidationError("Account not found")
 
         login = credentials[0]
 
         return self.serv.find_account(login)
 
 
-    # INPUT:
-    # OUTPUT:
-    # PRECONDITION:
-    # POSTCONDITION:
+    # INPUT/OUTPUT/PRECONDITION/POSTCONDITION: see respective Service.fund_account() fields
     # RAISES:
+    #   -ValidationError; where invalid, see Validator.fund_validator() POSTCONDITION
     def fund_account(self, user_account, funds_request):
         valid = self.validator.fund_validator(funds_request)
 
         if not valid:
-            raise ValidationError("")
+            raise ValidationError("Funds out of range")
 
         return self.serv.fund_account(user_account, funds_request)
 
 
-    # INPUT:
-    # OUTPUT:
-    # PRECONDITION:
-    # POSTCONDITION:
+    # INPUT/OUTPUT/PRECONDITION/POSTCONDITION: see respective Service.create_portfolio() fields
     # RAISES:
+    #   -ValidationError; where invalid (create = True), see Validator.portfolio_validator() POSTCONDITION
     def create_portfolio(self, user_account, portfolio_name):
         valid = self.validator.portfolio_validator(user_account, portfolio_name, create = True)
 
         if not valid:
-            raise ValidationError("")
+            raise ValidationError("Portfolio could not be created")
 
         return self.serv.create_portfolio(user_account, portfolio_name)
 
 
-    # INPUT:
-    # OUTPUT:
-    # PRECONDITION:
-    # POSTCONDITION:
+    # INPUT/OUTPUT/PRECONDITION/POSTCONDITION: see respective Service.remove_portfolio() fields
     # RAISES:
+    #   -ValidationError; where invalid (create = False), see Validator.portfolio_validator() POSTCONDITION
     def remove_portfolio(self, user_account, portfolio_name):
         valid = self.validator.portfolio_validator(user_account, portfolio_name, create = False)
 
         if not valid:
-            raise ValidationError("")
+            raise ValidationError("Portfolio could not be removed")
 
         return self.serv.remove_portfolio(user_account, portfolio_name)
 
 
-    # INPUT:
-    # OUTPUT:
-    # PRECONDITION:
-    # POSTCONDITION:
+    # INPUT/OUTPUT/PRECONDITION/POSTCONDITION: see respective Service.execute_buy() fields
     # RAISES:
+    #   -ValidationError; where invalid (purchase = True), see Validator.stock_ticker_validator() && Validator.stock_quantity_validator() && Validator.sufficient_balance_validator() POSTCONDITIONS
     def execute_buy(self, user_account, portfolio, shares_requested):
         ticker = shares_requested[0]
         purchase = True
 
         valid = self.validator.stock_ticker_validator(portfolio, ticker, purchase)
         if not valid:
-            raise ValidationError("")
+            raise ValidationError("Ticker supplied does not exist")
 
         valid = self.validator.stock_quantity_validator(portfolio, shares_requested, purchase)
         if not valid:
-            raise ValidationError("")
+            raise ValidationError("Quantity requested is too much")
 
         valid = self.validator.sufficient_balance_validator(user_account.balance, shares_requested, purchase)
         if not valid:
-            raise ValidationError("")
+            raise ValidationError("Insufficient Balance")
 
         return self.serv.execute_buy(user_account, portfolio, shares_requested)
 
 
-    # INPUT:
-    # OUTPUT:
-    # PRECONDITION:
-    # POSTCONDITION:
+    # INPUT/OUTPUT/PRECONDITION/POSTCONDITION: see respective Service.execute_sell() fields
     # RAISES:
+    #   -ValidationError; where invalid (purchase = False), see Validator.stock_ticker_validator() && Validator.stock_quantity_validator() && Validator.sufficient_balance_validator() POSTCONDITIONS
     def execute_sell(self, user_account, portfolio, shares_requested):
         ticker = shares_requested[0]
         purchase = False
 
         valid = self.validator.stock_ticker_validator(portfolio, ticker, purchase)
         if not valid:
-            raise ValidationError("")
+            raise ValidationError("Ticker is not owned")
 
         valid = self.validator.stock_quantity_validator(portfolio, shares_requested, purchase)
         if not valid:
-            raise ValidationError("")
+            raise ValidationError("User has insufficient quantity")
 
         valid = self.validator.sufficient_balance_validator(user_account.balance, shares_requested, purchase)
         if not valid:
-            raise ValidationError("")
+            raise ValidationError("Balance too high")
 
         return self.serv.execute_sell(user_account, portfolio, shares_requested)
