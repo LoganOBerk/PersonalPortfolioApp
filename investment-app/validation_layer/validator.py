@@ -195,3 +195,7 @@ class Validator:
         valid = 1_000_000 > funds_request > 0
 
         return valid
+
+
+   
+

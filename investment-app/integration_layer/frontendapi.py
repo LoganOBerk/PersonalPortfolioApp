@@ -29,7 +29,7 @@ class FrontendApi:
         valid = self.validator.account_validator(credentials, new=True)
 
         if not valid:
-            raise ValidationError("Account could not be created")
+            raise ValidationError("A user with this login already exists or field was blank")
 
         return self.serv.create_account(credentials)
 
@@ -43,7 +43,7 @@ class FrontendApi:
         valid = self.validator.account_validator(credentials, new=False)
 
         if not valid:
-            raise ValidationError("Account not found")
+            raise ValidationError("Login/Password are incorrect")
 
         login = credentials[0]
 
@@ -57,7 +57,7 @@ class FrontendApi:
         valid = self.validator.fund_validator(funds_request)
 
         if not valid:
-            raise ValidationError("Funds out of range")
+            raise ValidationError("Funds to add must be 1-999,999")
 
         return self.serv.fund_account(user_account, funds_request)
 
@@ -69,7 +69,7 @@ class FrontendApi:
         valid = self.validator.portfolio_validator(user_account, portfolio_name, create=True)
 
         if not valid:
-            raise ValidationError("Portfolio could not be created")
+            raise ValidationError("Portfolio already exists or no name entered")
 
         return self.serv.create_portfolio(user_account, portfolio_name)
 
@@ -81,7 +81,7 @@ class FrontendApi:
         valid = self.validator.portfolio_validator(user_account, portfolio_name, create=False)
 
         if not valid:
-            raise ValidationError("Portfolio could not be removed")
+            raise ValidationError("Portfolio name does not exist")
 
         return self.serv.remove_portfolio(user_account, portfolio_name)
 
@@ -124,6 +124,6 @@ class FrontendApi:
 
         valid = self.validator.stock_quantity_validator(portfolio, shares_requested, purchase)
         if not valid:
-            raise ValidationError("User has insufficient quantity")
+            raise ValidationError("User has insufficient amount of stock")
 
         return self.serv.execute_sell(user_account, portfolio, shares_requested)
