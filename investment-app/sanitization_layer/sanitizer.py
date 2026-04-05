@@ -2,7 +2,7 @@
 #   -
 #   -
 class Sanitizer:
-
+    
     # INPUT:
     # OUTPUT:
     # PRECONDITION:
@@ -78,7 +78,7 @@ class Sanitizer:
     # POSTCONDITION:
     # RAISES:
     @staticmethod
-    def sanitize_quantity(quantity : str) -> int:
+    def sanitize_quantity(quantity : str) -> int | None:
          try:
             quantity = int(quantity)
          except Exception:
@@ -93,7 +93,7 @@ class Sanitizer:
     # POSTCONDITION:
     # RAISES:
     @staticmethod
-    def sanitize_shares_request(self, shares_request : tuple[str,str]) -> tuple[str, str]:
+    def sanitize_shares_request(self, shares_request : tuple[str,str]) -> tuple[str, str | None]:
         shares_request = self.sanitize_ticker(shares_request[0]), self.sanitize_quantity(shares_request[1])
         return shares_request
 
