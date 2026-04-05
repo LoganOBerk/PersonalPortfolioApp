@@ -1,24 +1,45 @@
-
-from domain_models import portfolio
-
-
+# PURPOSE:
+#   -
+#   -
 class Sanitizer:
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    # RAISES:
     @staticmethod
     def sanitize_login(login : str) -> str:
         login = login.strip()
         return login
 
 
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    # RAISES:
     @staticmethod
     def sanitize_password(password : str) -> str:
         return password
 
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    # RAISES:
     @staticmethod
     def sanitize_credentials(self, credentials : tuple[str, str]) -> tuple[str, str]:
         credentials = self.sanitize_login(credentials[0]), self.sanitize_password(credentials[1])
         return credentials
 
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    # RAISES:
     @staticmethod
     def sanitize_funds_request(funds_request : str) -> float | None:
         try:
@@ -28,16 +49,34 @@ class Sanitizer:
 
         return funds_request
 
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    # RAISES:
     @staticmethod
     def sanitize_portfolio_name(portfolio_name : str) -> str:
         portfolio_name.strip()
         return portfolio_name
 
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    # RAISES:
     @staticmethod
     def sanitize_ticker(ticker : str) -> str:
         ticker = ticker.strip()
         return ticker
 
+
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    # RAISES:
     @staticmethod
     def sanitize_quantity(quantity : str) -> int:
          try:
@@ -48,7 +87,11 @@ class Sanitizer:
          return quantity
 
        
-
+    # INPUT:
+    # OUTPUT:
+    # PRECONDITION:
+    # POSTCONDITION:
+    # RAISES:
     @staticmethod
     def sanitize_shares_request(self, shares_request : tuple[str,str]) -> tuple[str, str]:
         shares_request = self.sanitize_ticker(shares_request[0]), self.sanitize_quantity(shares_request[1])
