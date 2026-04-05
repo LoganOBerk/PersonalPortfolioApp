@@ -107,7 +107,7 @@ class Cli:
         while True:
             print('---------------LOGIN/SIGNUP---------------\n')
             
-            login = input('Enter your login:')
+            login = input('Enter your login:').strip()
             password = input('Enter your password:')
 
             creds = login, password
@@ -280,7 +280,7 @@ class Cli:
 
             # TODO: Portfolio name input receiver
 
-            name_request = input("Enter portfolio name: ")
+            name_request = input("Enter portfolio name: ").strip()
 
             result = self.validator.portfolio_validator(user_account, name_request, create)
 
@@ -390,7 +390,7 @@ class Cli:
             print("\n------------- Stock Transaction ---------------")
             
             # TODO: shares_requested input receiver (ticker & quantity)
-            ticker = input("Enter stock ticker (e.g., AAPL): ")
+            ticker = input("Enter stock ticker (e.g., AAPL): ").strip()
             quantity = get_int_input("Enter number of shares to buy/sell: ")
             
             shares_requested = ticker, quantity

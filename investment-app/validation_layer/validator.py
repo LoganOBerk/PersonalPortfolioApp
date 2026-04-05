@@ -35,13 +35,13 @@ class Validator:
         # TODO: Add any other validation you want, if you want to enforce certain additional constraints
         login, password = credentials
         
-        if login == '' and password != '':
+        if login == '' and password != '' and not password.isspace():
             return Result(False, "No username entered.")
 
-        if login != '' and password == '':
+        if login != '' and password == '' or password.isspace():
             return Result(False, "No password entered.")
 
-        if login == '' and password == '':
+        if login == '' and password == '' or password.isspace():
             return Result(False, "No credentials entered.")
         
         stored_password = self.serv.resolve_password(login)
