@@ -23,11 +23,12 @@ class App:
     #	-testing; is True or False
     #	-frontend; is True or False
     # POSTCONDITION:
+    #   -self.san; Sanitizer constructed
     #	-self.db; Database constructed with resolved db_path
     #	-self.serv; Service constructed with self.db injection
     #	-self.val; Validator constructed with self.serv injection
-    #	-frontend=True; self.display is Frontend with serv, val injection
-    #	-frontend=False; self.vis is Visualizer; self.display is Cli with serv, val, vis injection
+    #	-frontend=True; self.display is Frontend with serv, san, val injection
+    #	-frontend=False; self.vis is Visualizer; self.display is Cli with serv, san, val, vis injection
     # RAISES: None
     def init(self, testing : bool, frontend : bool) -> None:
         if testing:
